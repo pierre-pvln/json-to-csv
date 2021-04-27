@@ -1,0 +1,28 @@
+{
+	"filenames": {
+		"retrieval_set_name": "NL-Born-BSGW",
+		"ref_in_fname": "2021-01-Test1"
+	},
+	"dates": { 
+	    "startdate": "2021-01-01",
+		"enddate": "2021-01-31"
+	},
+	"folders": { 
+		"ref_dir" : "../input/",
+		"output_dir" : "../output/",
+		"output_tmp" : "../output/temp/",
+		"settings_dir" : "../../set/"
+	},
+	"output": {
+	    "yearfolder" : "2021",
+		"municipality" : "Born",
+		"output_to_excel" : "True",
+		"max_excel_lines" : 1048576
+	},
+	"calculations":{
+		"session_border_in_hours" : 12
+	},
+	"debug" : {
+		"full_verbose" : "True"
+	}
+}

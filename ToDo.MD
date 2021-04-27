@@ -1,0 +1,1 @@
+- Zorgen dat er eem uniforme python kernel gebruikt wordt in alle scripts

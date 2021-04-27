@@ -1,0 +1,1 @@
+copy projectsettings_iph.json projectsettings.json

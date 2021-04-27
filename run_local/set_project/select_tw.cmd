@@ -1,0 +1,1 @@
+copy projectsettings_tw.json projectsettings.json

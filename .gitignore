@@ -1,0 +1,28 @@
+###
+#
+# Settings folders and files
+#
+###
+/.set
+
+###
+#
+# links and url shortcuts
+#
+###
+*.lnk
+
+###
+#
+# IDE folders and files
+#
+###
+/.idea
+__pycache__/
+
+###
+#
+# Output Files
+#
+###
+output/
