@@ -1,15 +1,14 @@
+import os
 import json
 import socket
-import boto3
-from typing import cast, List
-import calendar
-import pandas as pd
-import urllib3
+
 import datetime
-import os
-import tempfile
-import bz2
+from typing import cast, List
+
+import boto3
 import awswrangler as wr
+
+import pandas as pd
 
 
 def get_filename_datetime():
@@ -65,22 +64,14 @@ def s3_list(bucket_name: str, prefix: str, *, limit: int = cast(int, float("inf"
     assert len(contents) <= limit
     return contents
 
+
+# Get the project settings
+# ========================
+
 settingsfile = "projectsettings.json"
 # Read settings from json file
 with open(settingsfile, 'r') as jsonf:
     SETTINGS = json.load(jsonf)
-
-the_hostname = socket.gethostname()
-print('running on   : '+the_hostname)
-
-if the_hostname != 'ip-10-0-1-5':
-    # were probably running local so we need credentials
-    # get settings for aws profile from environment variables
-    profile_name = os.environ.get("AWS_PROFILE_NAME")
-    boto3.setup_default_session(profile_name=os.environ.get("AWS_PROFILE_NAME"))
-    print("profile_name : "+profile_name)
-
-_S3_CLIENT = boto3.client("s3")
 
 projectname = SETTINGS['project']['name']
 folderprefix = SETTINGS['project']['folderprefix']
@@ -88,7 +79,8 @@ polygonset = SETTINGS['project']['polygonset']
 
 process_from_date = SETTINGS['period']['fromdate']
 process_to_date = SETTINGS['period']['todate']
-process_name = SETTINGS['period']['name']
+
+ref_in_filename = SETTINGS['filenames']['ref_in_fname']
 
 input_bucket = SETTINGS['s3']['inputbucket']
 input_region = SETTINGS['s3']['inputregion']
@@ -107,6 +99,21 @@ lon_min = float(SETTINGS['boundingbox']['lon_min'])
 lon_max = float(SETTINGS['boundingbox']['lon_max'])
 
 output_dir = SETTINGS['folders']['output_dir']
+
+the_hostname = socket.gethostname()
+print('running on   : '+the_hostname)
+
+if the_hostname != 'ip-10-0-1-5':
+    # were probably running local so we need credentials
+    # get settings for aws profile from environment variables
+    profile_name = os.environ.get("AWS_PROFILE_NAME")
+    boto3.setup_default_session(profile_name=os.environ.get("AWS_PROFILE_NAME"))
+    print("profile_name : "+profile_name)
+
+_S3_CLIENT = boto3.client("s3")
+
+# copy project settingsfile also to s3 for future reference
+response = _S3_CLIENT.upload_file(settingsfile, output_bucket, folderprefix + "/" + ref_in_filename + "/" + settingsfile)
 
 # TODO don't use boudingbox settings but get bouding box info from files in set
 #    bucket_object = _S3_CLIENT.get_object(Bucket=polygon_bucket, Key='sets/'+polygonset)
@@ -173,7 +180,7 @@ output_df = output_df.rename(columns={'time': 'ships_time_UTC', 'longitude': 'lo
 output_df.sort_values(by=['mmsi', 'ships_time_UTC'], inplace=True, ignore_index=True)
 
 # save the df to s3
-wr.s3.to_csv(df=output_df, index=False, path='s3://' + output_bucket + "/" + folderprefix + "/" + process_name + "_" + projectname + ".csv")
+wr.s3.to_csv(df=output_df, index=False, path='s3://' + output_bucket + "/" + folderprefix + "/" + ref_in_filename + "/details/" + projectname + "_AIS_baseline.csv")
 
 # check if not running as Lambda function
 # https://stackoverflow.com/questions/36287374/how-to-check-if-python-app-is-running-within-aws-lambda-function
@@ -181,13 +188,10 @@ wr.s3.to_csv(df=output_df, index=False, path='s3://' + output_bucket + "/" + fol
 if os.environ.get("AWS_EXECUTION_ENV") is None:
     # save df also to local disk for further processing
 
-    ref_in_fname = process_name
-    retrieval_set_name = projectname
-
     # check if output folder exists. If not create it.
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
-    output_filename = output_dir+ref_in_fname+"_"+retrieval_set_name+"_AIS_baseline"
+    output_filename = output_dir + ref_in_filename + "_" + projectname + "_AIS_baseline"
     # extended data output files
-    output_df.to_csv(output_filename+".csv")
+    output_df.to_csv(output_filename + ".csv")

@@ -1,7 +1,7 @@
 {
   "settings": {
-    "version": "v0.04",
-    "date": "2021-04-27", 
+    "version": "v0.05",
+    "date": "2021-04-28",
     "comment": "Ipheion variant; Source should be in projectsettings.json"
   },
   "project": {
@@ -10,7 +10,6 @@
     "polygonset": "NL-Born-BSGW.json"
   },
   "filenames": {
-    "retrieval_set_name": "NL-Born-BSGW",
     "ref_in_fname": "2021-04-IPH"
   },
   "s3": {
@@ -24,12 +23,7 @@
   },
   "period": {
     "fromdate": "2021-04-01",
-    "todate"  : "2021-04-02",
-    "name"    : "2021-04-IPH"
-  },
-  "dates": { 
-    "startdate": "2021-04-01",
-    "enddate": "2021-04-02"
+    "todate"  : "2021-04-01"
   },
   "boundingbox": {
     "lat_min" : "51.04884071768644",
@@ -37,7 +31,7 @@
     "lon_min" : "5.807733535766602",
     "lon_max" : "5.8180010318756095"
   },
-  "folders": { 
+  "folders": {
     "ref_dir" : "../input/",
     "output_dir" : "../output/",
     "output_tmp" : "../output/temp/",
