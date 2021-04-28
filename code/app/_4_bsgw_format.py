@@ -21,8 +21,8 @@ with open(settingsfile, 'r') as jsonf:
 retrieval_set_name = SETTINGS['filenames']["retrieval_set_name"]
 ref_in_fname = SETTINGS['filenames']["ref_in_fname"]  # used as reference in output filename
 
-startdate = SETTINGS['dates']["startdate"]
-enddate = SETTINGS['dates']["enddate"]
+startdate = SETTINGS['period']["fromdate"]
+enddate = SETTINGS['period']["todate"]
 # enddate="2020-9-1"
 
 

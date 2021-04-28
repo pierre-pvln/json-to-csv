@@ -78,8 +78,7 @@ if the_hostname != 'ip-10-0-1-5':
     # get settings for aws profile from environment variables
     profile_name = os.environ.get("AWS_PROFILE_NAME")
     boto3.setup_default_session(profile_name=os.environ.get("AWS_PROFILE_NAME"))
-
-print("profile_name : "+profile_name)
+    print("profile_name : "+profile_name)
 
 _S3_CLIENT = boto3.client("s3")
 
