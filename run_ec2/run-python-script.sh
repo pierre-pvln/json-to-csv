@@ -4,7 +4,7 @@
 cd ~/json-to-csv/code/app
 
 touch $( date '+%Y-%m-%d_%H-%M-%S' )_app_started
-source env/bin/activate
+source ~/env/bin/activate
 
 continue=true
 
@@ -68,6 +68,6 @@ then
     fi
 fi
 
-deactivate
+~/env/bin/deactivate
 cd ~/aws-json-to-csv/code/app
 touch $( date '+%Y-%m-%d_%H-%M-%S' )_app_ended
