@@ -1,15 +1,19 @@
-#from IPython.core.display import display
-
 # basic stuff
 import os
 import json
+import socket
+# import getpass
 
 # data science stuff
 import pandas as pd
 
+# aws stuff
+import boto3
+import awswrangler as wr
+
 # import the modules to wrangle the data
-#import baselineAIS
-import extendAIS
+# import baselineAIS
+# import extendAIS
 import report_output
 # import financial_output
 
@@ -18,13 +22,18 @@ settingsfile = "projectsettings.json"
 with open(settingsfile, 'r') as jsonf:
     SETTINGS = json.load(jsonf)
 
-retrieval_set_name = SETTINGS['filenames']["retrieval_set_name"]
-ref_in_fname = SETTINGS['filenames']["ref_in_fname"]  # used as reference in output filename
+# TODO verwidjeren
+# retrieval_set_name = SETTINGS['filenames']["retrieval_set_name"]
+
+ref_in_filename = SETTINGS['filenames']["ref_in_fname"]  # used as reference in output filename
+
+projectname = SETTINGS['project']['name']
+folderprefix = SETTINGS['project']['folderprefix']
 
 startdate = SETTINGS['period']["fromdate"]
 enddate = SETTINGS['period']["todate"]
-# enddate="2020-9-1"
 
+output_bucket = SETTINGS['s3']['outputbucket']
 
 # Save statistics data, needed for SFTP
 yearfolder = SETTINGS['output']["yearfolder"]
@@ -49,7 +58,7 @@ settings_dir = SETTINGS['folders']["settings_dir"]
 
 # path_to_files="/home/developer/myPolygons/"
 # path_to_files="C:/Users/pierr_8jj0nf8/OneDrive/@pvln_coding_PVE/myPolygons/"
-path_to_files = "C:/Users/developer/OneDrive/@pvln_coding_PVE/myPolygons/"
+# path_to_files = "C:/Users/developer/OneDrive/@pvln_coding_PVE/myPolygons/"
 # path_to_files = "C:/Users/pierre/OneDrive/@pvln_coding_PVE/myPolygons/"
 
 output_to_excel = SETTINGS['output']["output_to_excel"]
@@ -60,20 +69,33 @@ max_excel_lines = SETTINGS['output']["max_excel_lines"]
 # debugging
 full_verbose = SETTINGS['debug']["full_verbose"]
 
+the_hostname = socket.gethostname()
+print('running on   : '+the_hostname)
+
+if the_hostname != 'ip-10-0-1-5':
+    # were probably running local so we need credentials
+    # get settings for aws profile from environment variables
+    profile_name = os.environ.get("AWS_PROFILE_NAME")
+    boto3.setup_default_session(profile_name=os.environ.get("AWS_PROFILE_NAME"))
+    print("profile_name : "+profile_name)
+
+_S3_CLIENT = boto3.client("s3")
+
 # what to do with output files; reread them?
 # reread_csv = SETTINGS['output']["output_to_excel"] #False levert mog problemen op
 
-# check if output folder exists. If not create it.
-if not os.path.exists(output_dir):
-    os.makedirs(output_dir)
 
-# check if temp output folder exists. If not create it.
-if not os.path.exists(output_tmp):
-    os.makedirs(output_tmp)
+# # check if output folder exists. If not create it.
+# if not os.path.exists(output_dir):
+#     os.makedirs(output_dir)
+#
+# # check if temp output folder exists. If not create it.
+# if not os.path.exists(output_tmp):
+#     os.makedirs(output_tmp)
 
 # DEZE KAN ER UIT...
-#fileswanted = baselineAIS.create_fileslist(retrieval_set_name+".json", path_to_files)
-#if full_verbose:
+# fileswanted = baselineAIS.create_fileslist(retrieval_set_name+".json", path_to_files)
+# if full_verbose:
 #    print(fileswanted)
 
 ####################################
@@ -85,7 +107,7 @@ if not os.path.exists(output_tmp):
 #
 #  (re)load the data (always csv), as exel might not contain all data or is not present at all
 #
-input_filename = output_dir+ref_in_fname+"_"+retrieval_set_name+"_AIS_extended"
+input_filename = output_dir+ref_in_filename+"_"+projectname+"_AIS_extended"
 # statistics_output = pd.read_csv(input_filename+".csv", index_col=0)
 # statistics_output = statistics_output.reset_index(drop=True)
 statistics_output = pd.read_csv(input_filename+".csv")
@@ -108,11 +130,21 @@ statistics_output['delta'] = (statistics_output['local_time']-statistics_output[
 if full_verbose:
     print(statistics_output)
 
-output_filename = output_dir+ref_in_fname+"_"+retrieval_set_name+"_statistics_output1"
-# extended data output files
-statistics_output.to_csv(output_filename+".csv")
-if output_to_excel and len(statistics_output.index) < max_excel_lines: 
-    statistics_output.to_excel(output_filename+".xlsx")
+# save the df to s3
+wr.s3.to_csv(df=statistics_output, index=False, path='s3://' + output_bucket + "/" + folderprefix + "/" + ref_in_filename + "/details/" + projectname + "_statistics_output1.csv")
+
+if os.environ.get("AWS_EXECUTION_ENV") is None:
+    # save df also to local disk for further processing
+
+    # check if output folder exists. If not create it.
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+
+    output_filename = output_dir+ref_in_filename+"_"+projectname+"_statistics_output1"
+    # extended data output files
+    statistics_output.to_csv(output_filename+".csv")
+    if output_to_excel and len(statistics_output.index) < max_excel_lines:
+        statistics_output.to_excel(output_filename+".xlsx")
 
 # https://stackoverflow.com/questions/37504605/timestamps-into-sessions-pandas
 
@@ -125,16 +157,28 @@ diff_user = statistics_output['mmsi'] != statistics_output['mmsi'].shift()
 session_id = (diff_user | gt_tst).cumsum()
 
 statistics_output['session_id'] = session_id
-statistics_output['session_id_final'] = statistics_output['session_id'].apply(str).apply(lambda x: x.zfill(4)) + "-" + statistics_output['mmsi'].apply(str) + "_" + retrieval_set_name + "_" + ref_in_fname
+statistics_output['session_id_final'] = statistics_output['session_id'].apply(str).apply(lambda x: x.zfill(4)) + "-" + statistics_output['mmsi'].apply(str) + "_" + projectname + "_" + ref_in_filename
 
 if full_verbose:
     print(statistics_output)
 
-output_filename = output_dir+ref_in_fname+"_"+retrieval_set_name+"_statistics_output2"
-# extended data output files
-statistics_output.to_csv(output_filename+".csv")
-if output_to_excel and len(statistics_output.index) < max_excel_lines: 
-    statistics_output.to_excel(output_filename+".xlsx")
+
+# save the df to s3
+wr.s3.to_csv(df=statistics_output, index=False, path='s3://' + output_bucket + "/" + folderprefix + "/" + ref_in_filename + "/details/" + projectname + "_statistics_output2.csv")
+
+
+if os.environ.get("AWS_EXECUTION_ENV") is None:
+    # save df also to local disk for further processing
+
+    # check if output folder exists. If not create it.
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+
+    output_filename = output_dir+ref_in_filename+"_"+projectname+"_statistics_output2"
+    # extended data output files
+    statistics_output.to_csv(output_filename+".csv")
+    if output_to_excel and len(statistics_output.index) < max_excel_lines:
+        statistics_output.to_excel(output_filename+".xlsx")
 
 pivot_table = pd.pivot_table(statistics_output,
                              values=['locations_set', 'local_time'],
@@ -187,16 +231,41 @@ df_missing_ships = report_output.missing_info(inputdf=statistics_output,
 # if full_verbose:
 #    print('## reg_country column added ##')
 #    print(statistics_output.head(5))                                            
-    
 
-output_filename = output_dir+ref_in_fname+"_"+retrieval_set_name+"_statistics_output"
-# extended data output files
-statistics_output.to_csv(output_filename+".csv")
-if output_to_excel and len(statistics_output.index) < max_excel_lines: 
-    statistics_output.to_excel(output_filename+".xlsx")
 
-output_filename = output_dir+ref_in_fname+"_"+retrieval_set_name+"_missing_ships_info"
-# extended data output files
-df_missing_ships.to_csv(output_filename+".csv")
-if output_to_excel and len(df_missing_ships.index) < max_excel_lines: 
-    df_missing_ships.to_excel(output_filename+".xlsx", index=False)
+# save the df to s3
+wr.s3.to_csv(df=statistics_output, index=False, path='s3://' + output_bucket + "/" + folderprefix + "/" + ref_in_filename + "/details/" + projectname + "_statistics_output.csv")
+
+# check if not running as Lambda function
+# https://stackoverflow.com/questions/36287374/how-to-check-if-python-app-is-running-within-aws-lambda-function
+#
+if os.environ.get("AWS_EXECUTION_ENV") is None:
+    # save df also to local disk for further processing
+
+    # check if output folder exists. If not create it.
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+
+    output_filename = output_dir + ref_in_filename + "_" + projectname + "_statistics_output"
+    # extended data output files
+    statistics_output.to_csv(output_filename+".csv")
+    if output_to_excel and len(statistics_output.index) < max_excel_lines:
+        statistics_output.to_excel(output_filename+".xlsx")
+
+# save the df to s3
+wr.s3.to_csv(df=df_missing_ships, index=False, path='s3://' + output_bucket + "/" + folderprefix + "/" + ref_in_filename + "/details/" + projectname + "_missing_ships_info.csv")
+# check if not running as Lambda function
+# https://stackoverflow.com/questions/36287374/how-to-check-if-python-app-is-running-within-aws-lambda-function
+#
+if os.environ.get("AWS_EXECUTION_ENV") is None:
+    # save df also to local disk for further processing
+
+    # check if output folder exists. If not create it.
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+
+    output_filename = output_dir + ref_in_filename + "_" + projectname + "_missing_ships_info"
+    # extended data output files
+    df_missing_ships.to_csv(output_filename+".csv")
+    if output_to_excel and len(df_missing_ships.index) < max_excel_lines:
+        df_missing_ships.to_excel(output_filename+".xlsx", index=False)

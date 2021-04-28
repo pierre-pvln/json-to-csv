@@ -5,47 +5,50 @@
 # basic stuff
 import os
 import json
+import socket
 import getpass
 
 # data science stuff
 import pandas as pd
 
+# aws stuff
+import boto3
+import awswrangler as wr
+
 # import the modules to wrangle the data
 import my_utils
 import extendAIS
-# import report_output
-# import financial_output
+
+# Get the project settings
+# ========================
 
 settingsfile = "projectsettings.json"
 # Read settings from json file
 with open(settingsfile, 'r') as jsonf:
     SETTINGS = json.load(jsonf)
 
-retrieval_set_name = SETTINGS['filenames']["retrieval_set_name"]
-ref_in_fname = SETTINGS['filenames']["ref_in_fname"]  # used as reference in output filename
+ref_in_filename = SETTINGS['filenames']["ref_in_fname"]  # used as reference in output filename
+
+projectname = SETTINGS['project']['name']
+folderprefix = SETTINGS['project']['folderprefix']
 
 startdate = SETTINGS['period']["fromdate"]
 enddate = SETTINGS['period']["todate"]
-# enddate="2020-9-1"
 
+output_bucket = SETTINGS['s3']['outputbucket']
 
 # Save statistics data, needed for SFTP
 yearfolder = SETTINGS['output']["yearfolder"]
 municipality = SETTINGS['output']["municipality"]
 
-# timedelta to check if same session
-# the maximum time between 2 registrations to be seen as one session
-session_border = SETTINGS['calculations']["session_border_in_hours"]
-
-# OTHER PARAMETERS
-###################
+# # timedelta to check if same session
+# # the maximum time between 2 registrations to be seen as one session
+# session_border = SETTINGS['calculations']["session_border_in_hours"]
 
 # folders for output
 ref_dir = SETTINGS['folders']["ref_dir"]
-
-# folders for output
 output_dir = SETTINGS['folders']["output_dir"]
-output_tmp = SETTINGS['folders']["output_tmp"]
+# output_tmp = SETTINGS['folders']["output_tmp"]
 
 # folder for settings
 settings_dir = SETTINGS['folders']["settings_dir"]
@@ -70,15 +73,29 @@ max_excel_lines = SETTINGS['output']["max_excel_lines"]
 # debugging
 full_verbose = SETTINGS['debug']["full_verbose"]
 
-# check if output folder exists. If not create it.
-if not os.path.exists(output_dir):
-    os.makedirs(output_dir)
+the_hostname = socket.gethostname()
+print('running on   : '+the_hostname)
 
+if the_hostname != 'ip-10-0-1-5':
+    # were probably running local so we need credentials
+    # get settings for aws profile from environment variables
+    profile_name = os.environ.get("AWS_PROFILE_NAME")
+    boto3.setup_default_session(profile_name=os.environ.get("AWS_PROFILE_NAME"))
+    print("profile_name : "+profile_name)
+
+_S3_CLIENT = boto3.client("s3")
+
+# TODO Remove is done at the end
+# # check if output folder exists. If not create it.
+# if not os.path.exists(output_dir):
+#     os.makedirs(output_dir)
+
+# TODO Remove from code and project settings
 # check if temp output folder exists. If not create it.
-if not os.path.exists(output_tmp):
-    os.makedirs(output_tmp)
+# if not os.path.exists(output_tmp):
+#     os.makedirs(output_tmp)
 
-fileswanted = my_utils.create_fileslist(retrieval_set_name+".json", path_to_files)
+fileswanted = my_utils.create_fileslist(projectname + ".json", path_to_files)
 if full_verbose:
     print(fileswanted)
 
@@ -90,7 +107,7 @@ if full_verbose:
 #
 #  (re)load the data (always csv), as exel might not contain all data or is not present at all
 #
-input_filename = output_dir+ref_in_fname+"_"+retrieval_set_name+"_AIS_baseline"
+input_filename = output_dir + ref_in_filename + "_" + projectname + "_AIS_baseline"
 # ais_extended = pd.read_csv(input_filename+".csv", index_col=0)
 # ais_extended = ais_extended.reset_index(drop=True)
 
@@ -170,8 +187,21 @@ if full_verbose:
     print("5########################")
     print(ais_extended.columns)
 
-output_filename = output_dir+ref_in_fname+"_"+retrieval_set_name+"_AIS_extended"
-# extended data output files
-ais_extended.to_csv(output_filename+".csv")
-if output_to_excel and len(ais_extended.index) < max_excel_lines:
-    ais_extended.to_excel(output_filename+".xlsx")
+# save the df to s3
+wr.s3.to_csv(df=ais_extended, index=False, path='s3://' + output_bucket + "/" + folderprefix + "/" + ref_in_filename + "/details/" + projectname + "_AIS_extended.csv")
+
+# check if not running as Lambda function
+# https://stackoverflow.com/questions/36287374/how-to-check-if-python-app-is-running-within-aws-lambda-function
+#
+if os.environ.get("AWS_EXECUTION_ENV") is None:
+    # save df also to local disk for further processing
+
+    # check if output folder exists. If not create it.
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+
+    output_filename = output_dir + ref_in_filename + "_" + projectname + "_AIS_extended"
+    # extended data output files
+    ais_extended.to_csv(output_filename+".csv")
+    if output_to_excel and len(ais_extended.index) < max_excel_lines:
+        ais_extended.to_excel(output_filename+".xlsx")

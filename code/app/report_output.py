@@ -7,8 +7,16 @@ def add_shipinfo(inputdf,reference_dir,reference_filename,verbose=False):
     Add ship info to dataset
     '''
     
-    df_shipsdata = pd.read_excel(reference_dir+reference_filename,dtype=str)
-    df_shipsdata = df_shipsdata.fillna("")
+    df_shipsdata = pd.read_excel(reference_dir+reference_filename,
+                                 dtype=str,
+                                 engine='openpyxl'
+                                 )
+
+    # drop any rows with empty mmsi value
+    df_shipsdata = df_shipsdata.dropna(subset=['mmsi'])
+
+#    df_shipsdata = df_shipsdata.fillna("")
+
     df_shipsdata['mmsi'] = df_shipsdata['mmsi'].astype(int)
     
     #add ships data to dataframe

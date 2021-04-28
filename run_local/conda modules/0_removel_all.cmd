@@ -67,41 +67,11 @@ GOTO :ERROR_EXIT
 :LEGION-2020
 IF "%USERNAME%"=="developer" (
    echo [INFO ] Commands for %USERNAME% on %COMPUTERNAME% ...
-   echo [INFO ] Installing python 3.8 ...
-   call C:\myPrograms\anaconda3\Scripts\activate.bat
-   call conda create -y --name %conda_environment% python=3.8
-   call C:\myPrograms\anaconda3\Scripts\activate.bat
-   call conda activate %conda_environment%
+   call conda list
    echo.
-   echo [INFO ] Installing rtree ...
+   echo [INFO ] Removing %conda_environment% ...
    echo.
-   call conda install -y -c conda-forge rtree
-   echo.
-   echo [INFO ] Installing shapely ...
-   echo.
-   echo.
-   call conda install -y -c conda-forge shapely
-   echo.
-   echo [INFO ] Installing geopandas ...
-   echo.
-   call conda install -y -c conda-forge geopandas
-   echo.
-   echo [INFO ] Installing pandas ...
-   echo.
-   call conda install -y -c anaconda pandas
-   echo.
-   echo [INFO ] Installing openpyxl ...
-   echo.
-   call  conda install -y -c anaconda openpyxl  
-   echo.
-   echo [INFO ] Installing boto3 ...
-   echo.
-   call conda install -y -c anaconda boto3
-   echo.
-   echo [INFO ] Installing awswrangler ...
-   echo.
-   call conda install -y -c conda-forge awswrangler
-   echo.
+   call conda env remove --name %conda_environment%
    call conda list
    echo.
    GOTO :CLEAN_EXIT

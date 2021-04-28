@@ -1,3 +1,4 @@
+# basic stuff
 import os
 import json
 import socket
@@ -5,10 +6,12 @@ import socket
 import datetime
 from typing import cast, List
 
+# data science stuff
+import pandas as pd
+
+# aws stuff
 import boto3
 import awswrangler as wr
-
-import pandas as pd
 
 
 def get_filename_datetime():

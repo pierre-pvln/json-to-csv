@@ -36,7 +36,7 @@ if [[ "${continue}" == "true" ]]
 then
     echo "[INFO ] Running script 3"
     echo "[INFO ] ================"
-    python3 _3_satistics_output.py
+    python3 _3_statistics_output.py
     if [[ $? -ne 0 ]]
         then
             continue=false

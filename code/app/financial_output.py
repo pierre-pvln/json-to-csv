@@ -20,7 +20,10 @@ def add_billing_info(inputdf, reference_dir, reference_filename, verbose=False):
     # ##https://datatofish.com/string-to-integer-dataframe/
     
     # df_billing_info = pd.read_excel(reference_dir+reference_filename,dtype=str)
-    df_billing_info = pd.read_excel(reference_dir+reference_filename, dtype=str)
+    df_billing_info = pd.read_excel(reference_dir+reference_filename,
+                                    dtype=str,
+                                    engine='openpyxl'
+                                    )
     
     df_billing_info = df_billing_info.fillna("")
     
@@ -29,6 +32,11 @@ def add_billing_info(inputdf, reference_dir, reference_filename, verbose=False):
         df_billing_info = df_billing_info.drop(['eni'], axis=1)
     
     print(df_billing_info)
+
+    # drop any rows with empty/nan mmsi value
+    df_billing_info = df_billing_info.dropna(subset=['mmsi'])
+    df_billing_info = df_billing_info[df_billing_info.mmsi != ""]
+
     df_billing_info['mmsi'] = df_billing_info['mmsi'].astype(int)
     
     # add specific billing info for geozone (if defined)

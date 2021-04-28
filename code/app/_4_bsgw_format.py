@@ -1,11 +1,15 @@
-#from IPython.core.display import display
-
 # basic stuff
 import os
 import json
+import socket
+# import getpass
 
 # data science stuff
 import pandas as pd
+
+# aws stuff
+import boto3
+import awswrangler as wr
 
 # import the modules to wrangle the data
 # import baselineAIS
@@ -18,13 +22,15 @@ settingsfile = "projectsettings.json"
 with open(settingsfile, 'r') as jsonf:
     SETTINGS = json.load(jsonf)
 
-retrieval_set_name = SETTINGS['filenames']["retrieval_set_name"]
-ref_in_fname = SETTINGS['filenames']["ref_in_fname"]  # used as reference in output filename
+ref_in_filename = SETTINGS['filenames']["ref_in_fname"]  # used as reference in output filename
+
+projectname = SETTINGS['project']['name']
+folderprefix = SETTINGS['project']['folderprefix']
 
 startdate = SETTINGS['period']["fromdate"]
 enddate = SETTINGS['period']["todate"]
-# enddate="2020-9-1"
 
+output_bucket = SETTINGS['s3']['outputbucket']
 
 # Save statistics data, needed for SFTP
 yearfolder = SETTINGS['output']["yearfolder"]
@@ -60,16 +66,28 @@ max_excel_lines = SETTINGS['output']["max_excel_lines"]
 # debugging
 full_verbose = SETTINGS['debug']["full_verbose"]
 
+the_hostname = socket.gethostname()
+print('running on   : '+the_hostname)
+
+if the_hostname != 'ip-10-0-1-5':
+    # were probably running local so we need credentials
+    # get settings for aws profile from environment variables
+    profile_name = os.environ.get("AWS_PROFILE_NAME")
+    boto3.setup_default_session(profile_name=os.environ.get("AWS_PROFILE_NAME"))
+    print("profile_name : "+profile_name)
+
+_S3_CLIENT = boto3.client("s3")
+
 # what to do with output files; reread them?
 # reread_csv = SETTINGS['output']["output_to_excel"] #False levert mog problemen op
 
-# check if output folder exists. If not create it.
-if not os.path.exists(output_dir):
-    os.makedirs(output_dir)
-
-# check if temp output folder exists. If not create it.
-if not os.path.exists(output_tmp):
-    os.makedirs(output_tmp)
+# # check if output folder exists. If not create it.
+# if not os.path.exists(output_dir):
+#     os.makedirs(output_dir)
+#
+# # check if temp output folder exists. If not create it.
+# if not os.path.exists(output_tmp):
+#     os.makedirs(output_tmp)
 
 ####################################
 #
@@ -80,7 +98,7 @@ if not os.path.exists(output_tmp):
 #
 #  (re)load the data (always csv), as exel might not contain all data or is not present at all
 #
-input_filename = output_dir+ref_in_fname+"_"+retrieval_set_name+"_statistics_output"
+input_filename = output_dir+ref_in_filename+"_"+projectname+"_statistics_output"
 BSGW_output = pd.read_csv(input_filename+".csv", index_col=0, dtype=str)
 # BSGW_output = statistics_output.reset_index(drop=True)
 BSGW_output = BSGW_output.reset_index(drop=True)
@@ -106,21 +124,44 @@ df_missing_billing = report_output.missing_info(inputdf=BSGW_output,
                                                 check_column='factuur naam',
                                                 verbose=True)
 
-output_filename = output_dir+ref_in_fname+"_"+retrieval_set_name+"_BSGW_output_TEMP"
-# extended data output files
-BSGW_output.to_csv(output_filename+".csv")
-if output_to_excel and len(BSGW_output.index) < max_excel_lines: 
-    BSGW_output.to_excel(output_filename+".xlsx", index=False)
+# save the df to s3
+wr.s3.to_csv(df=BSGW_output, index=False, path='s3://' + output_bucket + "/" + folderprefix + "/" + ref_in_filename + "/details/" + projectname + "_BSGW_output_TEMP.csv")
+# check if not running as Lambda function
+# https://stackoverflow.com/questions/36287374/how-to-check-if-python-app-is-running-within-aws-lambda-function
+#
+if os.environ.get("AWS_EXECUTION_ENV") is None:
+    # save df also to local disk for further processing
 
-output_filename = output_dir+ref_in_fname+"_"+retrieval_set_name+"_missing_billing_info"
-# extended data output files
-df_missing_billing.to_csv(output_filename+".csv")
-if output_to_excel and len(df_missing_billing.index) < max_excel_lines: 
-    df_missing_billing.to_excel(output_filename+".xlsx", index=False)
+    # check if output folder exists. If not create it.
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+
+    output_filename = output_dir+ref_in_filename+"_"+projectname+"_BSGW_output_TEMP"
+    # extended data output files
+    BSGW_output.to_csv(output_filename+".csv")
+    if output_to_excel and len(BSGW_output.index) < max_excel_lines:
+        BSGW_output.to_excel(output_filename+".xlsx", index=False)
+
+# save the df to s3
+wr.s3.to_csv(df=df_missing_billing, index=False, path='s3://' + output_bucket + "/" + folderprefix + "/" + ref_in_filename + "/details/" + projectname + "_missing_billing_info.csv")
+# check if not running as Lambda function
+# https://stackoverflow.com/questions/36287374/how-to-check-if-python-app-is-running-within-aws-lambda-function
+#
+if os.environ.get("AWS_EXECUTION_ENV") is None:
+    # save df also to local disk for further processing
+
+    # check if output folder exists. If not create it.
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+
+    output_filename = output_dir + ref_in_filename + "_" + projectname + "_missing_billing_info"
+    # extended data output files
+    df_missing_billing.to_csv(output_filename + ".csv")
+    if output_to_excel and len(df_missing_billing.index) < max_excel_lines:
+        df_missing_billing.to_excel(output_filename + ".xlsx", index=False)
 
 if full_verbose:
     print(BSGW_output.dtypes)
-
 
 # Set specific columns
 '''
@@ -235,8 +276,29 @@ BSGW_output = pd.concat([BSGW_output, pd.DataFrame(columns=columns_to_add)], sor
 
 BSGW_output.sort_values(['Omschrijving 1', 'Omschrijving 2'], ascending=[True, True], inplace=True)
 
-output_filename = output_dir+ref_in_fname+"_"+retrieval_set_name+"_BSGW_output"
-# extended data output files
-BSGW_output.to_csv(output_filename+".csv", columns=columns_to_write, index=False)
-if output_to_excel and len(df_missing_billing.index) < max_excel_lines: 
-    BSGW_output.to_excel(output_filename+".xlsx", columns=columns_to_write, index=False)
+# save the df to s3 in csv and xslx format
+wr.s3.to_csv(df=BSGW_output,
+             columns=columns_to_write,
+             index=False,
+             path='s3://' + output_bucket + "/" + folderprefix + "/" + ref_in_filename + "/" + projectname + "_BSGW_output.csv")
+
+wr.s3.to_excel(df=BSGW_output,
+               columns=columns_to_write,
+               index=False,
+               path='s3://' + output_bucket + "/" + folderprefix + "/" + ref_in_filename + "/" + projectname + "_BSGW_output.xlsx")
+
+# check if not running as Lambda function
+# https://stackoverflow.com/questions/36287374/how-to-check-if-python-app-is-running-within-aws-lambda-function
+#
+if os.environ.get("AWS_EXECUTION_ENV") is None:
+    # save df also to local disk for further processing
+
+    # check if output folder exists. If not create it.
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+
+    output_filename = output_dir + ref_in_filename + "_" + projectname + "_BSGW_output"
+    # extended data output files
+    BSGW_output.to_csv(output_filename + ".csv", columns=columns_to_write, index=False)
+    if output_to_excel and len(df_missing_billing.index) < max_excel_lines:
+        BSGW_output.to_excel(output_filename + ".xlsx", columns=columns_to_write, index=False)
