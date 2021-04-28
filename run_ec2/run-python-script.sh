@@ -69,5 +69,6 @@ then
 fi
 
 ~/env/bin/deactivate
+
 cd ~/aws-json-to-csv/code/app
 touch $( date '+%Y-%m-%d_%H-%M-%S' )_app_ended
