@@ -1,1 +1,1 @@
-copy projectsettings_iph.json projectsettings.json
+copy ..\code\settings\Born\projectsettings_iph.json ..\code\app\projectsettings.json
