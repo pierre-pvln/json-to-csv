@@ -22,7 +22,14 @@ __pycache__/
 
 ###
 #
-# Output Files
+# Output Files when run locally
 #
 ###
 output/
+
+###
+#
+# Files for S3 code repository 
+#
+###
+/S3_files/
