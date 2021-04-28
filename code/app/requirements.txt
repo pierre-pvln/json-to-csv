@@ -1,0 +1,8 @@
+boto3
+typing
+pandas
+urllib3
+datetime
+awswrangler
+pysftp
+geopandas
