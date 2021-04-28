@@ -54,12 +54,17 @@ SET CLI_Options_JSON=--profile %AWS_profile% --region %AWS_region% --output json
 :: cleanup first
 ECHO [INFO ] Clean up local ...
 IF EXIST "..\S3_files\json-to-csv\" (RMDIR /S /Q "..\S3_files\json-to-csv\")
+
+ECHO [INFO ] Clean up S3 ...
+%AWS_cli% %CLI_Options_JSON% s3 rm s3://iph-code-repository/json-to-csv/ --recursive
+
 IF NOT EXIST "..\S3_files\" (MKDIR "..\S3_files\")
 CD "..\S3_files\"
 
-:: get files with code from git
+ECHO [INFO ] Retrieving files from github ...
 git clone git@github.com:pierre-pvln/json-to-csv.git json-to-csv
 
+ECHO [INFO ] Copy files to S3 bucket ...
 :: copy files to s3 bucket
 ::%AWS_cli% %CLI_Options_JSON% s3 cp ./json-to-csv s3://iph-code-repository/json-to-csv/ --exclude "*.git/*" --recursive --dryrun
 %AWS_cli% %CLI_Options_JSON% s3 cp ./json-to-csv s3://iph-code-repository/json-to-csv/ --exclude "*.git/*" --recursive
