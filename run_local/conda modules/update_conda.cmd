@@ -29,36 +29,24 @@ GOTO :ERROR_EXIT
 
 :LAPTOP2017
 IF "%USERNAME%"=="pierr" (
-   echo commands for %USERNAME% on %COMPUTERNAME%
+   echo [INFO ] Commands for %USERNAME% on %COMPUTERNAME% ...
+   echo [INFO ] Updating Conda ...
    call C:\myPrograms\anaconda3\Scripts\activate.bat
-   call conda activate %conda_environment%
-   call conda env list
-   call conda list
-   echo going to install awswrangler
-   pause
-   call conda install -c conda-forge awswrangler 
+   call conda update -y -n base -c defaults conda
    GOTO :CLEAN_EXIT
 )
 IF "%USERNAME%"=="pierr_8jj0nf8" (
-   echo commands for %USERNAME% on %COMPUTERNAME%
+   echo [INFO ] Commands for %USERNAME% on %COMPUTERNAME% ...
+   echo [INFO ] Updating Conda ...
    call C:\myPrograms\anaconda3\Scripts\activate.bat
-   call conda activate %conda_environment%
-   call conda env list
-   call conda list
-   echo going to install awswrangler
-   pause
-   call conda install -c conda-forge awswrangler
+   call conda update -y -n base -c defaults conda
    GOTO :CLEAN_EXIT
 )
 IF "%USERNAME%"=="myAdm" (
-   echo commands for %USERNAME% on %COMPUTERNAME%
+   echo [INFO ] Commands for %USERNAME% on %COMPUTERNAME% ...
+   echo [INFO ] Updating Conda ...
    call C:\myPrograms\anaconda3\Scripts\activate.bat
-   call conda activate %conda_environment%
-   call conda env list
-   call conda list
-   echo going to install awswrangler
-   pause
-   call conda install -c conda-forge awswrangler
+   call conda update -y -n base -c defaults conda
    GOTO :CLEAN_EXIT
 )
 SET ERROR_MESSAGE=[ERROR] Not a valid user (%USERNAME%) on %COMPUTERNAME% ...
@@ -67,26 +55,16 @@ GOTO :ERROR_EXIT
 :LEGION-2020
 IF "%USERNAME%"=="developer" (
    echo [INFO ] Commands for %USERNAME% on %COMPUTERNAME% ...
+   echo [INFO ] Updating Conda ...
    call C:\myPrograms\anaconda3\Scripts\activate.bat
-   call conda env list
-   echo.
-   echo [INFO ] Removing %conda_environment% ...
-   echo.
-   pause
-   cls
-   call conda env remove --name %conda_environment%
-   call conda env list
+   call conda update -y -n base -c defaults conda
    GOTO :CLEAN_EXIT
 )
 IF "%USERNAME%"=="myAdm" (
-   echo commands for %USERNAME% on %COMPUTERNAME%
+   echo [INFO ] Commands for %USERNAME% on %COMPUTERNAME% ...
+   echo [INFO ] Updating Conda ...
    call C:\myPrograms\anaconda3\Scripts\activate.bat
-   call conda activate %conda_environment%
-   call conda env list
-   call conda list
-   echo going to install awswrangler
-   pause
-   call conda install -c conda-forge awswrangler
+   call conda update -y -n base -c defaults conda
    GOTO :CLEAN_EXIT
 )
 SET ERROR_MESSAGE=[ERROR] Not a valid user (%USERNAME%) on %COMPUTERNAME% ...

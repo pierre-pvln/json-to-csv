@@ -1,0 +1,1 @@
+- Create functions in the cmd file for similar actions

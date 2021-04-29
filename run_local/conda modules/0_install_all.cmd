@@ -72,37 +72,56 @@ IF "%USERNAME%"=="developer" (
    call conda create -y --name %conda_environment% python=3.8
    call C:\myPrograms\anaconda3\Scripts\activate.bat
    call conda activate %conda_environment%
+   cls
    echo.
    echo [INFO ] Installing rtree ...
    echo.
    call conda install -y -c conda-forge rtree
+   TIMEOUT /T 2
+   CLS
    echo.
    echo [INFO ] Installing shapely ...
    echo.
-   echo.
    call conda install -y -c conda-forge shapely
+   TIMEOUT /T 2
+   CLS
    echo.
    echo [INFO ] Installing geopandas ...
    echo.
    call conda install -y -c conda-forge geopandas
+   TIMEOUT /T 2
+   CLS
    echo.
    echo [INFO ] Installing pandas ...
    echo.
    call conda install -y -c anaconda pandas
+   TIMEOUT /T 2
+   CLS
    echo.
    echo [INFO ] Installing openpyxl ...
    echo.
    call  conda install -y -c anaconda openpyxl  
+   TIMEOUT /T 2
+   CLS
    echo.
    echo [INFO ] Installing boto3 ...
    echo.
    call conda install -y -c anaconda boto3
+   TIMEOUT /T 2
+   CLS
    echo.
    echo [INFO ] Installing awswrangler ...
    echo.
    call conda install -y -c conda-forge awswrangler
+   TIMEOUT /T 2
+   CLS
    echo.
-   call conda list
+   echo [INFO ] Installing pysftp ...
+   echo.
+   call conda install -y -c conda-forge pysftp
+   TIMEOUT /T 2
+   CLS
+   call conda env list
    echo.
    GOTO :CLEAN_EXIT
 )
