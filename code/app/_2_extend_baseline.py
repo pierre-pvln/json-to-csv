@@ -107,7 +107,7 @@ if full_verbose:
 #
 #  (re)load the data (always csv), as exel might not contain all data or is not present at all
 #
-input_filename = output_dir + ref_in_filename + "_" + projectname + "_AIS_baseline"
+input_filename = output_dir + ref_in_filename + "_" + the_hostname + "_" + projectname + "_AIS_baseline"
 # ais_extended = pd.read_csv(input_filename+".csv", index_col=0)
 # ais_extended = ais_extended.reset_index(drop=True)
 
