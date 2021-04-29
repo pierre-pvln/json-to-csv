@@ -216,41 +216,41 @@ BSGW_output['Subjectnr. ext'] = BSGW_output['tonnage']
 
 # de tekens: € / \ " ? ~ ` zijn niet toegestaan 
 # maximale lengte 60 chars
-BSGW_output['Omschrijving 1'] = BSGW_output['location_name'] + " / " + BSGW_output['name'] + " [" + BSGW_output['registratie-land'].str.replace(" ", "") + "]" + " /ENI: " + BSGW_output['eni'] + " /Tonn: " + BSGW_output['tonnage']
-BSGW_output['Omschrijving 1'] = BSGW_output['Omschrijving 1'].str.replace("€", "Euro")
-BSGW_output['Omschrijving 1'] = BSGW_output['Omschrijving 1'].str.replace("/", '-')
-BSGW_output['Omschrijving 1'] = BSGW_output['Omschrijving 1'].str.replace("\\", '-')
-BSGW_output['Omschrijving 1'] = BSGW_output['Omschrijving 1'].str.replace('"', '')
-BSGW_output['Omschrijving 1'] = BSGW_output['Omschrijving 1'].str.replace("?", '.')
-BSGW_output['Omschrijving 1'] = BSGW_output['Omschrijving 1'].str.replace("~", '-')
-BSGW_output['Omschrijving 1'] = BSGW_output['Omschrijving 1'].str.replace("`", '-')
-BSGW_output['Omschrijving 1'] = BSGW_output['Omschrijving 1'].str.replace("Kade ", '')
-BSGW_output['Omschrijving 1'] = BSGW_output['Omschrijving 1'].str.replace(" Born", '')
+BSGW_output['Omschrijving 1'] = BSGW_output['location_name'] + " / " + BSGW_output['name'] + " [" + BSGW_output['registratie-land'].str.replace(" ", "", regex=False) + "]" + " /ENI: " + BSGW_output['eni'] + " /Tonn: " + BSGW_output['tonnage']
+BSGW_output['Omschrijving 1'] = BSGW_output['Omschrijving 1'].str.replace("€", "Euro", regex=False)
+BSGW_output['Omschrijving 1'] = BSGW_output['Omschrijving 1'].str.replace("/", '-', regex=False)
+BSGW_output['Omschrijving 1'] = BSGW_output['Omschrijving 1'].str.replace("\\", '-', regex=False)
+BSGW_output['Omschrijving 1'] = BSGW_output['Omschrijving 1'].str.replace('"', '', regex=False)
+BSGW_output['Omschrijving 1'] = BSGW_output['Omschrijving 1'].str.replace("?", '.', regex=False)
+BSGW_output['Omschrijving 1'] = BSGW_output['Omschrijving 1'].str.replace("~", '-', regex=False)
+BSGW_output['Omschrijving 1'] = BSGW_output['Omschrijving 1'].str.replace("`", '-', regex=False)
+BSGW_output['Omschrijving 1'] = BSGW_output['Omschrijving 1'].str.replace("Kade ", '', regex=False)
+BSGW_output['Omschrijving 1'] = BSGW_output['Omschrijving 1'].str.replace(" Born", '', regex=False)
 BSGW_output['Omschrijving 1'] = BSGW_output['Omschrijving 1'].str[0:58]
 
 BSGW_output['Omschrijving 2'] = "van " + BSGW_output['local_time_min'] + " tot " + BSGW_output['local_time_max']
-BSGW_output['Omschrijving 2'] = BSGW_output['Omschrijving 2'].str.replace("€", 'Euro')
-BSGW_output['Omschrijving 2'] = BSGW_output['Omschrijving 2'].str.replace("/", '-')
-BSGW_output['Omschrijving 2'] = BSGW_output['Omschrijving 2'].str.replace("\\", '-')
-BSGW_output['Omschrijving 2'] = BSGW_output['Omschrijving 2'].str.replace('"', '')
-BSGW_output['Omschrijving 2'] = BSGW_output['Omschrijving 2'].str.replace("?", '.')
-BSGW_output['Omschrijving 2'] = BSGW_output['Omschrijving 2'].str.replace("~", '-')
-BSGW_output['Omschrijving 2'] = BSGW_output['Omschrijving 2'].str.replace("`", '-')
+BSGW_output['Omschrijving 2'] = BSGW_output['Omschrijving 2'].str.replace("€", 'Euro', regex=False)
+BSGW_output['Omschrijving 2'] = BSGW_output['Omschrijving 2'].str.replace("/", '-', regex=False)
+BSGW_output['Omschrijving 2'] = BSGW_output['Omschrijving 2'].str.replace("\\", '-', regex=False)
+BSGW_output['Omschrijving 2'] = BSGW_output['Omschrijving 2'].str.replace('"', '', regex=False)
+BSGW_output['Omschrijving 2'] = BSGW_output['Omschrijving 2'].str.replace("?", '.', regex=False)
+BSGW_output['Omschrijving 2'] = BSGW_output['Omschrijving 2'].str.replace("~", '-', regex=False)
+BSGW_output['Omschrijving 2'] = BSGW_output['Omschrijving 2'].str.replace("`", '-', regex=False)
 BSGW_output['Omschrijving 2'] = BSGW_output['Omschrijving 2'].str[0:58]
 
 BSGW_output['Omschrijving 3'] = ""
 
 BSGW_output['Verblijfsduur'] = BSGW_output['time_diff_str']
-BSGW_output['Verblijfsduur'] = BSGW_output['Verblijfsduur'].str.replace("0 days", '')
-BSGW_output['Verblijfsduur'] = BSGW_output['Verblijfsduur'].str.replace("1 days", '1 dag')
-BSGW_output['Verblijfsduur'] = BSGW_output['Verblijfsduur'].str.replace("days", 'dagen')
-BSGW_output['Verblijfsduur'] = BSGW_output['Verblijfsduur'].str.replace("€", 'Euro')
-BSGW_output['Verblijfsduur'] = BSGW_output['Verblijfsduur'].str.replace("/", '-')
-BSGW_output['Verblijfsduur'] = BSGW_output['Verblijfsduur'].str.replace("\\", '-')
-BSGW_output['Verblijfsduur'] = BSGW_output['Verblijfsduur'].str.replace('"', '')
-BSGW_output['Verblijfsduur'] = BSGW_output['Verblijfsduur'].str.replace("?", '.')
-BSGW_output['Verblijfsduur'] = BSGW_output['Verblijfsduur'].str.replace("~", '-')
-BSGW_output['Verblijfsduur'] = BSGW_output['Verblijfsduur'].str.replace("`", '-')
+BSGW_output['Verblijfsduur'] = BSGW_output['Verblijfsduur'].str.replace("0 days", '', regex=False)
+BSGW_output['Verblijfsduur'] = BSGW_output['Verblijfsduur'].str.replace("1 days", '1 dag', regex=False)
+BSGW_output['Verblijfsduur'] = BSGW_output['Verblijfsduur'].str.replace("days", 'dagen', regex=False)
+BSGW_output['Verblijfsduur'] = BSGW_output['Verblijfsduur'].str.replace("€", 'Euro', regex=False)
+BSGW_output['Verblijfsduur'] = BSGW_output['Verblijfsduur'].str.replace("/", '-', regex=False)
+BSGW_output['Verblijfsduur'] = BSGW_output['Verblijfsduur'].str.replace("\\", '-', regex=False)
+BSGW_output['Verblijfsduur'] = BSGW_output['Verblijfsduur'].str.replace('"', '', regex=False)
+BSGW_output['Verblijfsduur'] = BSGW_output['Verblijfsduur'].str.replace("?", '.', regex=False)
+BSGW_output['Verblijfsduur'] = BSGW_output['Verblijfsduur'].str.replace("~", '-', regex=False)
+BSGW_output['Verblijfsduur'] = BSGW_output['Verblijfsduur'].str.replace("`", '-', regex=False)
 BSGW_output['Verblijfsduur'] = BSGW_output['Verblijfsduur'].str[0:58]
 
 BSGW_output['MMSI-info'] = BSGW_output['mmsi']
