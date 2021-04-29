@@ -107,7 +107,7 @@ _S3_CLIENT = boto3.client("s3")
 #
 #  (re)load the data (always csv), as exel might not contain all data or is not present at all
 #
-input_filename = output_dir+ref_in_filename+"_"+projectname+"_AIS_extended"
+input_filename = output_dir+ref_in_filename+"_"+the_hostname + "_" +projectname+"_AIS_extended"
 # statistics_output = pd.read_csv(input_filename+".csv", index_col=0)
 # statistics_output = statistics_output.reset_index(drop=True)
 statistics_output = pd.read_csv(input_filename+".csv")
@@ -131,7 +131,7 @@ if full_verbose:
     print(statistics_output)
 
 # save the df to s3
-wr.s3.to_csv(df=statistics_output, index=False, path='s3://' + output_bucket + "/" + folderprefix + "/" + ref_in_filename + "/details/" + projectname + "_statistics_output1.csv")
+wr.s3.to_csv(df=statistics_output, index=False, path='s3://' + output_bucket + "/" + folderprefix + "/" + ref_in_filename + "/details/" + the_hostname + "_" + projectname + "_statistics_output1.csv")
 
 if os.environ.get("AWS_EXECUTION_ENV") is None:
     # save df also to local disk for further processing
@@ -140,7 +140,7 @@ if os.environ.get("AWS_EXECUTION_ENV") is None:
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
-    output_filename = output_dir+ref_in_filename+"_"+projectname+"_statistics_output1"
+    output_filename = output_dir+ref_in_filename+"_"+the_hostname + "_" +projectname+"_statistics_output1"
     # extended data output files
     statistics_output.to_csv(output_filename+".csv")
     if output_to_excel and len(statistics_output.index) < max_excel_lines:
@@ -157,14 +157,14 @@ diff_user = statistics_output['mmsi'] != statistics_output['mmsi'].shift()
 session_id = (diff_user | gt_tst).cumsum()
 
 statistics_output['session_id'] = session_id
-statistics_output['session_id_final'] = statistics_output['session_id'].apply(str).apply(lambda x: x.zfill(4)) + "-" + statistics_output['mmsi'].apply(str) + "_" + projectname + "_" + ref_in_filename
+statistics_output['session_id_final'] = statistics_output['session_id'].apply(str).apply(lambda x: x.zfill(4)) + "-" + statistics_output['mmsi'].apply(str) + "_" +the_hostname + "_" + projectname + "_" + ref_in_filename
 
 if full_verbose:
     print(statistics_output)
 
 
 # save the df to s3
-wr.s3.to_csv(df=statistics_output, index=False, path='s3://' + output_bucket + "/" + folderprefix + "/" + ref_in_filename + "/details/" + projectname + "_statistics_output2.csv")
+wr.s3.to_csv(df=statistics_output, index=False, path='s3://' + output_bucket + "/" + folderprefix + "/" + ref_in_filename + "/details/" + the_hostname + "_" +projectname + "_statistics_output2.csv")
 
 
 if os.environ.get("AWS_EXECUTION_ENV") is None:
@@ -174,7 +174,7 @@ if os.environ.get("AWS_EXECUTION_ENV") is None:
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
-    output_filename = output_dir+ref_in_filename+"_"+projectname+"_statistics_output2"
+    output_filename = output_dir+ref_in_filename+"_"+the_hostname + "_" +projectname+"_statistics_output2"
     # extended data output files
     statistics_output.to_csv(output_filename+".csv")
     if output_to_excel and len(statistics_output.index) < max_excel_lines:
@@ -234,7 +234,7 @@ df_missing_ships = report_output.missing_info(inputdf=statistics_output,
 
 
 # save the df to s3
-wr.s3.to_csv(df=statistics_output, index=False, path='s3://' + output_bucket + "/" + folderprefix + "/" + ref_in_filename + "/details/" + projectname + "_statistics_output.csv")
+wr.s3.to_csv(df=statistics_output, index=False, path='s3://' + output_bucket + "/" + folderprefix + "/" + ref_in_filename + "/details/" + the_hostname + "_" +projectname + "_statistics_output.csv")
 
 # check if not running as Lambda function
 # https://stackoverflow.com/questions/36287374/how-to-check-if-python-app-is-running-within-aws-lambda-function
@@ -246,14 +246,14 @@ if os.environ.get("AWS_EXECUTION_ENV") is None:
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
-    output_filename = output_dir + ref_in_filename + "_" + projectname + "_statistics_output"
+    output_filename = output_dir + ref_in_filename + "_" + the_hostname + "_" +projectname + "_statistics_output"
     # extended data output files
     statistics_output.to_csv(output_filename+".csv")
     if output_to_excel and len(statistics_output.index) < max_excel_lines:
         statistics_output.to_excel(output_filename+".xlsx")
 
 # save the df to s3
-wr.s3.to_csv(df=df_missing_ships, index=False, path='s3://' + output_bucket + "/" + folderprefix + "/" + ref_in_filename + "/details/" + projectname + "_missing_ships_info.csv")
+wr.s3.to_csv(df=df_missing_ships, index=False, path='s3://' + output_bucket + "/" + folderprefix + "/" + ref_in_filename + "/details/" + the_hostname + "_" +projectname + "_missing_ships_info.csv")
 # check if not running as Lambda function
 # https://stackoverflow.com/questions/36287374/how-to-check-if-python-app-is-running-within-aws-lambda-function
 #
@@ -264,7 +264,7 @@ if os.environ.get("AWS_EXECUTION_ENV") is None:
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
-    output_filename = output_dir + ref_in_filename + "_" + projectname + "_missing_ships_info"
+    output_filename = output_dir + ref_in_filename + "_" + the_hostname + "_" +projectname + "_missing_ships_info"
     # extended data output files
     df_missing_ships.to_csv(output_filename+".csv")
     if output_to_excel and len(df_missing_ships.index) < max_excel_lines:

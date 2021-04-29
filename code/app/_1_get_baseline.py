@@ -183,7 +183,7 @@ output_df = output_df.rename(columns={'time': 'ships_time_UTC', 'longitude': 'lo
 output_df.sort_values(by=['mmsi', 'ships_time_UTC'], inplace=True, ignore_index=True)
 
 # save the df to s3
-wr.s3.to_csv(df=output_df, index=False, path='s3://' + output_bucket + "/" + folderprefix + "/" + ref_in_filename + "/details/" + projectname + "_AIS_baseline.csv")
+wr.s3.to_csv(df=output_df, index=False, path='s3://' + output_bucket + "/" + folderprefix + "/" + ref_in_filename + "/details/" + the_hostname + "_" + projectname + "_AIS_baseline.csv")
 
 # check if not running as Lambda function
 # https://stackoverflow.com/questions/36287374/how-to-check-if-python-app-is-running-within-aws-lambda-function
@@ -195,6 +195,6 @@ if os.environ.get("AWS_EXECUTION_ENV") is None:
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
-    output_filename = output_dir + ref_in_filename + "_" + projectname + "_AIS_baseline"
+    output_filename = output_dir + ref_in_filename + "_" + the_hostname + "_" +projectname + "_AIS_baseline"
     # extended data output files
     output_df.to_csv(output_filename + ".csv")
