@@ -1,8 +1,6 @@
-#from IPython.core.display import display
-
 # basic stuff
-import os
 import json
+import socket
 
 # sftp stuff
 import pysftp
@@ -12,11 +10,9 @@ settingsfile = "projectsettings.json"
 with open(settingsfile, 'r') as jsonf:
     SETTINGS = json.load(jsonf)
 
-retrieval_set_name = SETTINGS['filenames']["retrieval_set_name"]
-ref_in_fname = SETTINGS['filenames']["ref_in_fname"]  # used as reference in output filename
+projectname = SETTINGS['project']['name']
 
-# folders for output
-ref_dir = SETTINGS['folders']["ref_dir"]
+ref_in_fname = SETTINGS['filenames']["ref_in_fname"]  # used as reference in output filename
 
 # folders for output
 output_dir = SETTINGS['folders']["output_dir"]
@@ -31,10 +27,11 @@ full_verbose = SETTINGS['debug']["full_verbose"]
 yearfolder = SETTINGS['output']["yearfolder"]
 municipality = SETTINGS['output']["municipality"]
 
+the_hostname = socket.gethostname()
+print('running on   : '+the_hostname)
+
 #####################
-#
 # SAVE TO SERVER(S)
-#
 #####################
 
 # Read sftp settings from json file
@@ -53,8 +50,12 @@ for sftpserver in SFTP_SETTINGS['sftpservers']:
     
     print('exporting data to: '+sftpserver)
 
-    # # GEOJSON INFO
-    filename = ref_in_fname+"_BB_"+retrieval_set_name   
+    # GEOJSON INFO FILES
+    # ==================
+    #
+    # TODO not shure yet what to do with geojsons
+    #
+    filename = ref_in_fname + "_BB_" + projectname
     remote_folder = str(yearfolder) + "/" + municipality.lower() + "/geojson/"
 
     try:
@@ -73,8 +74,9 @@ for sftpserver in SFTP_SETTINGS['sftpservers']:
         print(e)
         pass
 
-    # # AIS INFO
-    filename = ref_in_fname + "_" + retrieval_set_name+"_AIS_extended"
+    # AIS INFO FILES
+    # ==================
+    filename = ref_in_fname + "_" + the_hostname + "_" + projectname + "_AIS_extended"
     remote_folder = str(yearfolder) + "/" + municipality.lower() + "/ais/"
 
     try:
@@ -94,9 +96,9 @@ for sftpserver in SFTP_SETTINGS['sftpservers']:
         print(e)
         pass
 
-
-    # # STATISTICS
-    filename = ref_in_fname + "_" + retrieval_set_name + "_statistics_output"
+    # STATISTICS FILES
+    # ==================
+    filename = ref_in_fname + "_" + the_hostname + "_" + projectname + "_statistics_output"
     remote_folder = str(yearfolder) + "/" + municipality.lower() + "/beleid/"
 
     try:
@@ -116,8 +118,9 @@ for sftpserver in SFTP_SETTINGS['sftpservers']:
         print(e)
         pass
 
-    # # FINANCIAL
-    filename = ref_in_fname + "_" + retrieval_set_name + "_BSGW_output"
+    # FINANCIAL FILES
+    # ==================
+    filename = ref_in_fname + "_" + projectname + "_BSGW_output"
     remote_folder = str(yearfolder) + "/" + municipality.lower() + "/financieel/"
 
     try:

@@ -116,7 +116,7 @@ if the_hostname != 'ip-10-0-1-5':
 _S3_CLIENT = boto3.client("s3")
 
 # copy project settingsfile also to s3 for future reference
-response = _S3_CLIENT.upload_file(settingsfile, output_bucket, folderprefix + "/" + ref_in_filename + "/" + settingsfile)
+s3_response = _S3_CLIENT.upload_file(settingsfile, output_bucket, folderprefix + "/" + ref_in_filename + "/" + settingsfile)
 
 # TODO don't use boudingbox settings but get bouding box info from files in set
 #    bucket_object = _S3_CLIENT.get_object(Bucket=polygon_bucket, Key='sets/'+polygonset)
@@ -156,10 +156,10 @@ for a_day in dates_wanted:
                                               Key=a_file['Key'])
 
         serializedobject = bucket_object['Body'].read()
-        contents = json.loads(serializedobject)
+        file_contents = json.loads(serializedobject)
 
-        if contents[0]['ERROR'] is not True:  # file should contain some data
-            input_df = pd.DataFrame.from_records(contents[1])
+        if file_contents[0]['ERROR'] is not True:  # file should contain some data
+            input_df = pd.DataFrame.from_records(file_contents[1])
             # print(input_df)
             if len(input_df) > 1:  # valid data input. Sometimes file with no records.
                 filtered_df = input_df[(((input_df['LATITUDE'] > lat_min) & (input_df['LATITUDE'] < lat_max)) & ((input_df['LONGITUDE'] > lon_min) & (input_df['LONGITUDE'] < lon_max)))]
@@ -183,7 +183,10 @@ output_df = output_df.rename(columns={'time': 'ships_time_UTC', 'longitude': 'lo
 output_df.sort_values(by=['mmsi', 'ships_time_UTC'], inplace=True, ignore_index=True)
 
 # save the df to s3
-wr.s3.to_csv(df=output_df, index=False, path='s3://' + output_bucket + "/" + folderprefix + "/" + ref_in_filename + "/details/" + the_hostname + "_" + projectname + "_AIS_baseline.csv")
+wr.s3.to_csv(df=output_df,
+             index=False,
+             path='s3://' + output_bucket + "/" + folderprefix + "/" + ref_in_filename + "/details/" + the_hostname + "_" + projectname + "_AIS_baseline.csv"
+             )
 
 # check if not running as Lambda function
 # https://stackoverflow.com/questions/36287374/how-to-check-if-python-app-is-running-within-aws-lambda-function
@@ -195,6 +198,6 @@ if os.environ.get("AWS_EXECUTION_ENV") is None:
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
-    output_filename = output_dir + ref_in_filename + "_" + the_hostname + "_" +projectname + "_AIS_baseline"
+    output_filename = output_dir + ref_in_filename + "_" + the_hostname + "_" + projectname + "_AIS_baseline"
     # extended data output files
     output_df.to_csv(output_filename + ".csv")

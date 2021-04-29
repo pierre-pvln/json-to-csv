@@ -1,7 +1,3 @@
-# # set 'SPATIALINDEX_C_LIBRARY' otherwise rtree / geopandas complains
-# import os
-# os.environ['SPATIALINDEX_C_LIBRARY'] = 'C:/myPrograms/anaconda3/envs/py3.8-datascience/Library/bin'
-
 # basic stuff
 import os
 import json
@@ -188,7 +184,10 @@ if full_verbose:
     print(ais_extended.columns)
 
 # save the df to s3
-wr.s3.to_csv(df=ais_extended, index=False, path='s3://' + output_bucket + "/" + folderprefix + "/" + ref_in_filename + "/details/" + the_hostname + "_" + projectname + "_AIS_extended.csv")
+wr.s3.to_csv(df=ais_extended,
+             index=False,
+             path='s3://' + output_bucket + "/" + folderprefix + "/" + ref_in_filename + "/details/" + the_hostname + "_" + projectname + "_AIS_extended.csv"
+             )
 
 # check if not running as Lambda function
 # https://stackoverflow.com/questions/36287374/how-to-check-if-python-app-is-running-within-aws-lambda-function
@@ -200,7 +199,7 @@ if os.environ.get("AWS_EXECUTION_ENV") is None:
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
-    output_filename = output_dir + ref_in_filename + "_" + the_hostname + "_" +projectname + "_AIS_extended"
+    output_filename = output_dir + ref_in_filename + "_" + the_hostname + "_" + projectname + "_AIS_extended"
     # extended data output files
     ais_extended.to_csv(output_filename+".csv")
     if output_to_excel and len(ais_extended.index) < max_excel_lines:
