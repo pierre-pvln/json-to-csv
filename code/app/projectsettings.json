@@ -35,7 +35,7 @@
     "ref_dir" : "../input/",
     "output_dir" : "../output/",
     "output_tmp" : "../output/temp/",
-    "settings_dir" : "../../set/"
+    "settings_dir" : "../../.set/"
   },
   "output": {
     "yearfolder" : "2021",

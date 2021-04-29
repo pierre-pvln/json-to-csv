@@ -37,7 +37,7 @@ municipality = SETTINGS['output']["municipality"]
 #
 #####################
 
-# Read settings from json file
+# Read sftp settings from json file
 with open(settings_dir+'settings.json', 'r') as jsonf: 
     SFTP_SETTINGS = json.load(jsonf)
     # print(SETTINGS['sftpservers'])

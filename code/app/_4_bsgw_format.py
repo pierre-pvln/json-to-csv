@@ -158,7 +158,7 @@ if os.environ.get("AWS_EXECUTION_ENV") is None:
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
-    output_filename = output_dir + ref_in_filename + "_" + projectname + "_missing_billing_info"
+    output_filename = output_dir + ref_in_filename + "_" +the_hostname + "_" + projectname + "_missing_billing_info"
     # extended data output files
     df_missing_billing.to_csv(output_filename + ".csv")
     if output_to_excel and len(df_missing_billing.index) < max_excel_lines:
