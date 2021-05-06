@@ -267,7 +267,7 @@ if os.environ.get("AWS_EXECUTION_ENV") is None:
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
-    output_filename = output_dir + ref_in_filename + "_" + projectname + "_BSGW_output"
+    output_filename = output_dir + ref_in_filename + "_" + the_hostname + "_" + projectname + "_BSGW_output"
     # extended data output files
     BSGW_output.to_csv(output_filename + ".csv", columns=columns_to_write, index=False)
     if output_to_excel and len(df_missing_billing.index) < max_excel_lines:

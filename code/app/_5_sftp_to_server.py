@@ -123,8 +123,8 @@ for sftpserver in SFTP_SETTINGS['sftpservers']:
 
     # FINANCIAL FILES
     # ==================
-    local_fname = ref_in_fname + "_" + the_hostname + "_" + projectname + "_statistics_output"
-    remote_fname = ref_in_fname + "_" + projectname + "_statistics_output"
+    local_fname = ref_in_fname + "_" + the_hostname + "_" + projectname + "_BSGW_output"
+    remote_fname = ref_in_fname + "_" + projectname + "_BSGW_output"
     remote_folder = str(yearfolder) + "/" + municipality.lower() + "/financieel/"
 
     try:
