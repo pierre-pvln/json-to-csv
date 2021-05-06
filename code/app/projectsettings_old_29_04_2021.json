@@ -23,7 +23,7 @@
   },
   "period": {
     "fromdate": "2021-04-01",
-    "todate"  : "2021-04-30"
+    "todate"  : "2021-04-01"
   },
   "boundingbox": {
     "lat_min" : "51.04884071768644",
@@ -31,11 +31,11 @@
     "lon_min" : "5.807733535766602",
     "lon_max" : "5.8180010318756095"
   },
-  "folders": {
+  "folders": { 
     "ref_dir" : "../input/",
     "output_dir" : "../output/",
     "output_tmp" : "../output/temp/",
-    "settings_dir" : "../../set/"
+    "settings_dir" : "../../.set/"
   },
   "output": {
     "yearfolder" : "2021",

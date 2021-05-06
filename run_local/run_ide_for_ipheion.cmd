@@ -22,4 +22,4 @@ SET AWS_PROFILE_NAME=ipheion
 SET SPATIALINDEX_C_LIBRARY=C:/myPrograms/anaconda3/envs/py3.8-datascience/Library/bin
 
 :: start IDE
-CALL _pycharm.cmd
+CALL pycharm.cmd
