@@ -250,12 +250,12 @@ BSGW_output.sort_values(['Omschrijving 1', 'Omschrijving 2'], ascending=[True, T
 wr.s3.to_csv(df=BSGW_output,
              columns=columns_to_write,
              index=False,
-             path='s3://' + output_bucket + "/" + folderprefix + "/" + ref_in_filename + "/" + the_hostname + "_" + projectname + "_BSGW_output.csv")
+             path='s3://' + output_bucket + "/" + folderprefix + "/" + ref_in_filename + "/" + ref_in_filename + "_" + the_hostname + "_" + projectname + "_BSGW_output.csv")
 
 wr.s3.to_excel(df=BSGW_output,
                columns=columns_to_write,
                index=False,
-               path='s3://' + output_bucket + "/" + folderprefix + "/" + ref_in_filename + "/" + the_hostname + "_" + projectname + "_BSGW_output.xlsx")
+               path='s3://' + output_bucket + "/" + folderprefix + "/" + ref_in_filename + "/" + ref_in_filename + "_" + the_hostname + "_" + projectname + "_BSGW_output.xlsx")
 
 # check if not running as Lambda function
 # https://stackoverflow.com/questions/36287374/how-to-check-if-python-app-is-running-within-aws-lambda-function

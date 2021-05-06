@@ -55,7 +55,8 @@ for sftpserver in SFTP_SETTINGS['sftpservers']:
     #
     # TODO not shure yet what to do with geojsons
     #
-    filename = ref_in_fname + "_BB_" + projectname
+    local_fname = ref_in_fname + "_" + the_hostname + "_BB_" + projectname
+    remote_fname = ref_in_fname + "_BB_" + projectname
     remote_folder = str(yearfolder) + "/" + municipality.lower() + "/geojson/"
 
     try:
@@ -69,14 +70,15 @@ for sftpserver in SFTP_SETTINGS['sftpservers']:
                 sftp.makedirs(remote_folder, mode=777)
 
             print("Sending to: " + sftpserver + ' server: /' + remote_folder)
-            sftp.put(output_dir+filename+".geojson", remote_folder+filename+".geojson")
+            sftp.put(output_dir + local_fname + ".geojson", remote_folder + remote_fname + ".geojson")
     except Exception as e:
         print(e)
         pass
 
     # AIS INFO FILES
     # ==================
-    filename = ref_in_fname + "_" + the_hostname + "_" + projectname + "_AIS_extended"
+    local_fname = ref_in_fname + "_" + the_hostname + "_" + projectname + "_AIS_extended"
+    remote_fname = ref_in_fname + "_" + projectname + "_AIS_extended"
     remote_folder = str(yearfolder) + "/" + municipality.lower() + "/ais/"
 
     try:
@@ -90,15 +92,16 @@ for sftpserver in SFTP_SETTINGS['sftpservers']:
                 sftp.sftp.makedirs(remote_folder, mode=777)
 
             print("Sending to: " + sftpserver + ' server: /' + remote_folder)
-            sftp.put(output_dir+filename+".xlsx", remote_folder+filename+".xlsx")
-            sftp.put(output_dir+filename+".csv", remote_folder+filename+".csv")
+            sftp.put(output_dir + local_fname + ".xlsx", remote_folder + remote_fname + ".xlsx")
+            sftp.put(output_dir + local_fname + ".csv", remote_folder + remote_fname + ".csv")
     except Exception as e:
         print(e)
         pass
 
     # STATISTICS FILES
     # ==================
-    filename = ref_in_fname + "_" + the_hostname + "_" + projectname + "_statistics_output"
+    local_fname = ref_in_fname + "_" + the_hostname + "_" + projectname + "_statistics_output"
+    remote_fname = ref_in_fname + "_" + the_hostname + "_" + projectname + "_statistics_output"
     remote_folder = str(yearfolder) + "/" + municipality.lower() + "/beleid/"
 
     try:
@@ -112,15 +115,16 @@ for sftpserver in SFTP_SETTINGS['sftpservers']:
                 sftp.sftp.makedirs(remote_folder, mode=777)
 
             print("Sending to: " + sftpserver + ' server: /' + remote_folder)
-            sftp.put(output_dir+filename+".xlsx", remote_folder + filename+".xlsx")
-            sftp.put(output_dir+filename+".csv", remote_folder + filename+".csv")
+            sftp.put(output_dir + local_fname + ".xlsx", remote_folder + remote_fname + ".xlsx")
+            sftp.put(output_dir + local_fname + ".csv", remote_folder + remote_fname + ".csv")
     except Exception as e:
         print(e)
         pass
 
     # FINANCIAL FILES
     # ==================
-    filename = ref_in_fname + "_" + projectname + "_BSGW_output"
+    local_fname = ref_in_fname + "_" + the_hostname + "_" + projectname + "_statistics_output"
+    remote_fname = ref_in_fname + "_" + projectname + "_statistics_output"
     remote_folder = str(yearfolder) + "/" + municipality.lower() + "/financieel/"
 
     try:
@@ -134,8 +138,8 @@ for sftpserver in SFTP_SETTINGS['sftpservers']:
                 sftp.sftp.makedirs(remote_folder, mode=777)
 
             print("Sending to: " + sftpserver + ' server: /' + remote_folder)
-            sftp.put(output_dir+filename+".xlsx", remote_folder + filename + ".xlsx")
-            sftp.put(output_dir+filename+".csv", remote_folder + filename + ".csv")
+            sftp.put(output_dir + local_fname + ".xlsx", remote_folder + remote_fname + ".xlsx")
+            sftp.put(output_dir + local_fname + ".csv", remote_folder + remote_fname + ".csv")
     except Exception as e:
         print(e)
         pass
