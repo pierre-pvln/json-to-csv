@@ -107,11 +107,12 @@ if os.environ.get("AWS_EXECUTION_ENV") is None:
     if output_to_excel and len(BSGW_output.index) < max_excel_lines:
         BSGW_output.to_excel(output_filename+".xlsx", index=False)
 
-# save the df to s3
-wr.s3.to_csv(df=df_missing_billing,
-             index=False,
-             path='s3://' + output_bucket + "/" + folderprefix + "/" + ref_in_filename + "/details/" + the_hostname + "_" + projectname + "_missing_billing_info.csv"
-             )
+if len(df_missing_billing) >0 :
+    # save the df to s3
+    wr.s3.to_csv(df=df_missing_billing,
+                 index=False,
+                 path='s3://' + output_bucket + "/" + folderprefix + "/" + ref_in_filename + "/details/" + the_hostname + "_" + projectname + "_missing_billing_info.csv"
+                 )
 
 # check if not running as Lambda function
 # https://stackoverflow.com/questions/36287374/how-to-check-if-python-app-is-running-within-aws-lambda-function
