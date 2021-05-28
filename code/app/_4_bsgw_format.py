@@ -86,11 +86,12 @@ df_missing_billing = report_output.missing_info(inputdf=BSGW_output,
                                                 check_column='factuur naam',
                                                 verbose=True)
 
-# save the df to s3
-wr.s3.to_csv(df=BSGW_output,
-             index=False,
-             path='s3://' + output_bucket + "/" + folderprefix + "/" + ref_in_filename + "/details/" + the_hostname + "_" + projectname + "_BSGW_output_TEMP.csv"
-             )
+if len(BSGW_output) >0 :
+    # save the df to s3
+    wr.s3.to_csv(df=BSGW_output,
+                 index=False,
+                 path='s3://' + output_bucket + "/" + folderprefix + "/" + ref_in_filename + "/details/" + the_hostname + "_" + projectname + "_BSGW_output_TEMP.csv"
+                 )
 # check if not running as Lambda function
 # https://stackoverflow.com/questions/36287374/how-to-check-if-python-app-is-running-within-aws-lambda-function
 #
@@ -246,16 +247,17 @@ BSGW_output = pd.concat([BSGW_output, pd.DataFrame(columns=columns_to_add)], sor
 
 BSGW_output.sort_values(['Omschrijving 1', 'Omschrijving 2'], ascending=[True, True], inplace=True)
 
-# save the df to s3 in csv and xslx format
-wr.s3.to_csv(df=BSGW_output,
-             columns=columns_to_write,
-             index=False,
-             path='s3://' + output_bucket + "/" + folderprefix + "/" + ref_in_filename + "/" + ref_in_filename + "_" + the_hostname + "_" + projectname + "_BSGW_output.csv")
+if len(BSGW_output) >0 :
+    # save the df to s3 in csv and xslx format
+    wr.s3.to_csv(df=BSGW_output,
+                 columns=columns_to_write,
+                 index=False,
+                 path='s3://' + output_bucket + "/" + folderprefix + "/" + ref_in_filename + "/" + ref_in_filename + "_" + the_hostname + "_" + projectname + "_BSGW_output.csv")
 
-wr.s3.to_excel(df=BSGW_output,
-               columns=columns_to_write,
-               index=False,
-               path='s3://' + output_bucket + "/" + folderprefix + "/" + ref_in_filename + "/" + ref_in_filename + "_" + the_hostname + "_" + projectname + "_BSGW_output.xlsx")
+    wr.s3.to_excel(df=BSGW_output,
+                   columns=columns_to_write,
+                   index=False,
+                   path='s3://' + output_bucket + "/" + folderprefix + "/" + ref_in_filename + "/" + ref_in_filename + "_" + the_hostname + "_" + projectname + "_BSGW_output.xlsx")
 
 # check if not running as Lambda function
 # https://stackoverflow.com/questions/36287374/how-to-check-if-python-app-is-running-within-aws-lambda-function
