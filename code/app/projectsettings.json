@@ -5,12 +5,12 @@
     "comment": "Ipheion variant; Source should be in projectsettings.json"
   },
   "project": {
-    "name": "NL-Born-BSGW",
-    "folderprefix": "born",
-    "polygonset": "NL-Born-BSGW.json"
+    "name": "NL-Berg-Werkdok",
+    "folderprefix": "berg",
+    "polygonset": "NL-Berg-Werkdok.json"
   },
   "filenames": {
-    "ref_in_fname": "2021-04-IPH"
+    "ref_in_fname": "2021-05-IPH"
   },
   "s3": {
     "inputbucket"  : "ais-datasets-json",
@@ -22,14 +22,14 @@
 	"date_type" : "leading0"
   },
   "period": {
-    "fromdate": "2021-04-01",
-    "todate"  : "2021-04-30"
+    "fromdate": "2021-05-25",
+    "todate"  : "2021-05-27"
   },
   "boundingbox": {
-    "lat_min" : "51.04884071768644",
-    "lat_max" : "51.06354197242234",
-    "lon_min" : "5.807733535766602",
-    "lon_max" : "5.8180010318756095"
+    "lat_min" : "50.9588",
+    "lat_max" : "51.0041",
+    "lon_min" : "5.7481",
+    "lon_max" : "5.7764"
   },
   "folders": {
     "ref_dir" : "../input/",
@@ -39,7 +39,7 @@
   },
   "output": {
     "yearfolder" : "2021",
-    "municipality" : "Born",
+    "municipality" : "Stein",
     "output_to_excel" : "True",
     "max_excel_lines" : 1048576
   },
