@@ -5,12 +5,12 @@
     "comment": "Ipheion variant; Source should be in projectsettings.json"
   },
   "project": {
-    "name": "NL-Berg-Werkdok",
+    "name": "NL-Berg-WerkdokAannemer",
     "folderprefix": "berg",
-    "polygonset": "NL-Berg-Werkdok.json"
+    "polygonset": "NL-Berg-WerkdokAannemer.json"
   },
   "filenames": {
-    "ref_in_fname": "2021-05-IPH"
+    "ref_in_fname": "2021-06-IPH"
   },
   "s3": {
     "inputbucket"  : "ais-datasets-json",
@@ -22,8 +22,8 @@
 	"date_type" : "leading0"
   },
   "period": {
-    "fromdate": "2021-05-25",
-    "todate"  : "2021-05-27"
+    "fromdate": "2021-06-08",
+    "todate"  : "2021-06-08"
   },
   "boundingbox": {
     "lat_min" : "50.9588",
