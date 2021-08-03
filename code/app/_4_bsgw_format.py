@@ -86,7 +86,7 @@ df_missing_billing = report_output.missing_info(inputdf=BSGW_output,
                                                 check_column='factuur naam',
                                                 verbose=True)
 
-if len(BSGW_output) >0 :
+if len(BSGW_output) > 0:
     # save the df to s3
     wr.s3.to_csv(df=BSGW_output,
                  index=False,
@@ -108,13 +108,44 @@ if os.environ.get("AWS_EXECUTION_ENV") is None:
     if output_to_excel and len(BSGW_output.index) < max_excel_lines:
         BSGW_output.to_excel(output_filename+".xlsx", index=False)
 
-if len(df_missing_billing) >0 :
+filekey = folderprefix + "/" + ref_in_filename + "/details/" + the_hostname + "_" + projectname + "_missing_billing_info"
+s3_path = 's3://' + output_bucket + "/" + filekey
+if len(df_missing_billing) > 0:
     # save the df to s3
-    wr.s3.to_csv(df=df_missing_billing,
-                 index=False,
-                 path='s3://' + output_bucket + "/" + folderprefix + "/" + ref_in_filename + "/details/" + the_hostname + "_" + projectname + "_missing_billing_info.csv"
-                 )
+    wr.s3.to_csv(df=df_missing_billing, index=False, path=s3_path + ".csv")
+    if output_to_excel and len(df_missing_billing.index) < max_excel_lines:
+        wr.s3.to_excel(df=df_missing_billing, index=False, path=s3_path + ".xlsx")
+else:
+    print("TODO: Should check if missing_ships_info file exists and if so remove it")
 
+    response = _S3_CLIENT.list_objects_v2(Bucket=output_bucket, Prefix=filekey+".csv")
+    for obj in response.get('Contents', []):
+        print("=====")
+        print(obj)
+        print("=====")
+        if obj['Key'] == filekey+".csv":
+            print(obj)
+            print("Should now delete object")
+            _S3_CLIENT.delete_object(Bucket=output_bucket, Key=filekey + ".csv")
+
+    response = _S3_CLIENT.list_objects_v2(Bucket=output_bucket, Prefix=filekey+".xlsx")
+    for obj in response.get('Contents', []):
+        print("=====")
+        print(obj)
+        print("=====")
+        if obj['Key'] == filekey+".xlsx":
+            print(obj)
+            print("Should now delete object")
+            _S3_CLIENT.delete_object(Bucket=output_bucket, Key=filekey + ".xlsx")
+# OLD #
+# if len(df_missing_billing) > 0:
+#     # save the df to s3
+#     wr.s3.to_csv(df=df_missing_billing,
+#                  index=False,
+#                  path='s3://' + output_bucket + "/" + folderprefix + "/" + ref_in_filename + "/details/" + the_hostname + "_" + projectname + "_missing_billing_info.csv"
+#                  )
+
+output_filename = output_dir + ref_in_filename + "/" + the_hostname + "_" + projectname + "_missing_billing_info"
 # check if not running as Lambda function
 # https://stackoverflow.com/questions/36287374/how-to-check-if-python-app-is-running-within-aws-lambda-function
 #
@@ -122,14 +153,33 @@ if os.environ.get("AWS_EXECUTION_ENV") is None:
     # save df also to local disk for further processing
 
     # check if output folder exists. If not create it.
-    if not os.path.exists(output_dir):
-        os.makedirs(output_dir)
+    if not os.path.exists(output_dir + ref_in_filename):
+        os.makedirs(output_dir + ref_in_filename)
 
-    output_filename = output_dir + ref_in_filename + "_" + the_hostname + "_" + projectname + "_missing_billing_info"
-    # extended data output files
-    df_missing_billing.to_csv(output_filename + ".csv")
-    if output_to_excel and len(df_missing_billing.index) < max_excel_lines:
-        df_missing_billing.to_excel(output_filename + ".xlsx", index=False)
+    if len(df_missing_billing) > 0:
+        # extended data output files
+        df_missing_billing.to_csv(output_filename+".csv", index=False)
+        if output_to_excel and len(df_missing_billing.index) < max_excel_lines:
+            df_missing_billing.to_excel(output_filename+".xlsx", index=False)
+    else:
+        print("Removing files if they exist", output_filename)
+        if os.path.exists(output_filename+".csv"):
+            os.remove(output_filename+".csv")
+        if os.path.exists(output_filename+".xlsx"):
+            os.remove(output_filename+".xlsx")
+
+# if os.environ.get("AWS_EXECUTION_ENV") is None:
+#     # save df also to local disk for further processing
+#
+#     # check if output folder exists. If not create it.
+#     if not os.path.exists(output_dir):
+#         os.makedirs(output_dir)
+#
+#     output_filename = output_dir + ref_in_filename + "_" + the_hostname + "_" + projectname + "_missing_billing_info"
+#     # extended data output files
+#     df_missing_billing.to_csv(output_filename + ".csv")
+#     if output_to_excel and len(df_missing_billing.index) < max_excel_lines:
+#         df_missing_billing.to_excel(output_filename + ".xlsx", index=False)
 
 if full_verbose:
     print(BSGW_output.dtypes)
@@ -247,7 +297,7 @@ BSGW_output = pd.concat([BSGW_output, pd.DataFrame(columns=columns_to_add)], sor
 
 BSGW_output.sort_values(['Omschrijving 1', 'Omschrijving 2'], ascending=[True, True], inplace=True)
 
-if len(BSGW_output) >0 :
+if len(BSGW_output) > 0:
     # save the df to s3 in csv and xslx format
     wr.s3.to_csv(df=BSGW_output,
                  columns=columns_to_write,
