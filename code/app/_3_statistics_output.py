@@ -236,6 +236,10 @@ df_missing_ships = report_output.missing_info(inputdf=statistics_output,
 #    print('## reg_country column added ##')
 #    print(statistics_output.head(5))                                            
 
+# ###################
+# THIS IS WHERE ACTUAL OUTPUT STARTS
+# ###################
+
 # save the df to s3
 wr.s3.to_csv(df=statistics_output,
              index=False,
@@ -260,7 +264,7 @@ if os.environ.get("AWS_EXECUTION_ENV") is None:
 
 # OLD # path = 's3://' + output_bucket + "/" + folderprefix + "/" + ref_in_filename + "/details/" + the_hostname + "_" + projectname + "_missing_ships_info.csv"
 
-filekey = folderprefix + "/" + ref_in_filename + "/details/" + the_hostname + "_" + projectname + "_missingshipsinfo"
+filekey = folderprefix + "/" + ref_in_filename + "/details/" + the_hostname + "_" + projectname + "_missing_ships_info"
 s3_path = 's3://' + output_bucket + "/" + filekey
 if len(df_missing_ships) > 0:
     # save the df to s3
@@ -268,7 +272,7 @@ if len(df_missing_ships) > 0:
     if output_to_excel and len(df_missing_ships.index) < max_excel_lines:
         wr.s3.to_excel(df=df_missing_ships, index=False, path=s3_path + ".xlsx")
 else:
-    print("TODO: Should check if missingshipsinfo file exists and if so remove it")
+    print("TODO: Should check if missing_ships_info file exists and if so remove it")
 
     response = _S3_CLIENT.list_objects_v2(Bucket=output_bucket, Prefix=filekey+".csv")
     for obj in response.get('Contents', []):
@@ -298,6 +302,26 @@ else:
 #                  path='s3://' + output_bucket + "/" + folderprefix + "/" + ref_in_filename + "/details/" + the_hostname + "_" + projectname + "_missing_ships_info.csv"
 #                  )
 
+# # check if not running as Lambda function
+# # https://stackoverflow.com/questions/36287374/how-to-check-if-python-app-is-running-within-aws-lambda-function
+# #
+# if os.environ.get("AWS_EXECUTION_ENV") is None:
+#     # save df also to local disk for further processing
+#
+#     # check if output folder exists. If not create it.
+#     if not os.path.exists(output_dir):
+#         os.makedirs(output_dir)
+#
+#     output_filename = output_dir + ref_in_filename + "_" + the_hostname + "_" + projectname + "_missing_ships_info"
+#     # extended data output files
+#     df_missing_ships.to_csv(output_filename+".csv")
+#     if output_to_excel and len(df_missing_ships.index) < max_excel_lines:
+#         df_missing_ships.to_excel(output_filename+".xlsx", index=False)
+
+# =======================
+# To file
+# =======================
+output_filename = output_dir + ref_in_filename + "/" + the_hostname + "_" + projectname + "_missing_ships_info"
 # check if not running as Lambda function
 # https://stackoverflow.com/questions/36287374/how-to-check-if-python-app-is-running-within-aws-lambda-function
 #
@@ -305,11 +329,17 @@ if os.environ.get("AWS_EXECUTION_ENV") is None:
     # save df also to local disk for further processing
 
     # check if output folder exists. If not create it.
-    if not os.path.exists(output_dir):
-        os.makedirs(output_dir)
+    if not os.path.exists(output_dir + ref_in_filename):
+        os.makedirs(output_dir + ref_in_filename)
 
-    output_filename = output_dir + ref_in_filename + "_" + the_hostname + "_" + projectname + "_missing_ships_info"
-    # extended data output files
-    df_missing_ships.to_csv(output_filename+".csv")
-    if output_to_excel and len(df_missing_ships.index) < max_excel_lines:
-        df_missing_ships.to_excel(output_filename+".xlsx", index=False)
+    if len(df_missing_ships) > 0:
+        # extended data output files
+        df_missing_ships.to_csv(output_filename+".csv", index=False)
+        if output_to_excel and len(df_missing_ships.index) < max_excel_lines:
+            df_missing_ships.to_excel(output_filename+".xlsx", index=False)
+    else:
+        print("Removing files if they exist", output_filename)
+        if os.path.exists(output_filename+".csv"):
+            os.remove(output_filename+".csv")
+        if os.path.exists(output_filename+".xlsx"):
+            os.remove(output_filename+".xlsx")
