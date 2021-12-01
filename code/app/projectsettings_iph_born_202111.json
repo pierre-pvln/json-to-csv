@@ -10,7 +10,7 @@
     "polygonset": "NL-Born-BSGW.json"
   },
   "filenames": {
-    "ref_in_fname": "2021-10-IPH"
+    "ref_in_fname": "2021-11-IPH"
   },
   "s3": {
     "inputbucket"  : "ais-datasets-json",
