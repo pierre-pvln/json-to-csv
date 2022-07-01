@@ -23,7 +23,7 @@
   },
   "period": {
     "fromdate": "2022-06-01",
-    "todate"  : "2022-06-21"
+    "todate"  : "2022-06-30"
   },
   "boundingbox": {
     "lat_min" : "51.04884071768644",
