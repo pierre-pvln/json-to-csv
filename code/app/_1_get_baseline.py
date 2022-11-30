@@ -30,20 +30,25 @@ def create_dateslist(startdate, enddate):
     first_date = datetime.datetime.strptime(startdate, "%Y-%m-%d") - datetime.timedelta(days=1)
 
     # day after last date
-    if datetime.datetime.strptime(enddate, "%Y-%m-%d") >  datetime.datetime.now():
+    print(datetime.datetime.strptime(enddate, "%Y-%m-%d"))
+    print(datetime.datetime.now())
+    if datetime.datetime.strptime(enddate, "%Y-%m-%d") >=  datetime.datetime.now():
         last_date = datetime.datetime.now()
+        print("enddate >= now())
         print("enddate   :",enddate)
-        print(datetime.datetime.strptime(enddate, "%Y-%m-%d")
+        print(datetime.datetime.strptime(enddate, "%Y-%m-%d"))
         print("last_date :",last_date)
     else:
         last_date = datetime.datetime.strptime(enddate, "%Y-%m-%d") + datetime.timedelta(days=1)
+        print("enddate < now())
         print("enddate   :",enddate)
-        print(datetime.datetime.strptime(enddate, "%Y-%m-%d")
+        print(datetime.datetime.strptime(enddate, "%Y-%m-%d"))
         print("last_date :",last_date)
     
     dates_list = []
     step = datetime.timedelta(days=1)
     while first_date <= last_date:
+        print(first_date)
         dates_list.append([first_date.year, first_date.month, first_date.day])
         first_date += step
     return dates_list
