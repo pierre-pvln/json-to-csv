@@ -26,21 +26,34 @@ def create_dateslist(startdate, enddate):
     This approach is needed as we convert UTC to local time later on
     '''
 
-    # day before start date
-    first_date = datetime.datetime.strptime(startdate, "%Y-%m-%d") - datetime.timedelta(days=1)
+    # 1 day before start date unless first date is after today, then we use today
+    ###first_date = datetime.datetime.strptime(startdate, "%Y-%m-%d") - datetime.timedelta(days=1)
 
-    # day after last date
+    if datetime.datetime.strptime(startdate, "%Y-%m-%d").date() > datetime.datetime.now().date():
+        first_date = datetime.datetime.now()
+        print("startdate > now()")
+        print("startdate   :",startdate)
+        print(datetime.datetime.strptime(startdate, "%Y-%m-%d"))
+        print("first_date :",first_date)
+    else:
+        first_date = datetime.datetime.strptime(startdate, "%Y-%m-%d") - datetime.timedelta(days=1)
+        print("startdate <= now()")
+        print("startdate   :",startdate)
+        print(datetime.datetime.strptime(startdate, "%Y-%m-%d"))
+        print("first_date :",first_date)
+
+    # 1 day after last date unless last date is after today, then we use today
     print(datetime.datetime.strptime(enddate, "%Y-%m-%d"))
     print(datetime.datetime.now())
-    if datetime.datetime.strptime(enddate, "%Y-%m-%d") >=  datetime.datetime.now():
+    if datetime.datetime.strptime(enddate, "%Y-%m-%d").date() >= datetime.datetime.now().date():
         last_date = datetime.datetime.now()
-        print("enddate >= now())
+        print("enddate >= now()")
         print("enddate   :",enddate)
         print(datetime.datetime.strptime(enddate, "%Y-%m-%d"))
         print("last_date :",last_date)
     else:
         last_date = datetime.datetime.strptime(enddate, "%Y-%m-%d") + datetime.timedelta(days=1)
-        print("enddate < now())
+        print("enddate < now()")
         print("enddate   :",enddate)
         print(datetime.datetime.strptime(enddate, "%Y-%m-%d"))
         print("last_date :",last_date)
