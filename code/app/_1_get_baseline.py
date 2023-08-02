@@ -143,7 +143,8 @@ if the_hostname != 'ip-10-0-1-5':
 _S3_CLIENT = boto3.client("s3")
 
 # copy project settingsfile also to s3 for future reference
-s3_response = _S3_CLIENT.upload_file(settingsfile, output_bucket, folderprefix + "/" + ref_in_filename + "/" + settingsfile)
+s3_response = _S3_CLIENT.upload_file(settingsfile, output_bucket, folderprefix + "/" + ref_in_filename + "/" + settingsfile,
+                                     ExtraArgs={'ContentType': "application/json"}) # save as JSON format not as binary/octet-stream
 
 # TODO don't use boudingbox settings but get bouding box info from files in set
 #    bucket_object = _S3_CLIENT.get_object(Bucket=polygon_bucket, Key='sets/'+polygonset)
