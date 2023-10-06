@@ -1,8 +1,8 @@
 {
   "settings": {
-    "version": "v0.05",
-    "date": "2021-06-04",
-    "comment": "Ipheion variant; Source should be in projectsettings.json"
+    "version": "v0.06",
+    "date": "2023-10-06",
+    "comment": "aMultis variant; Should copy this file to projectsettings.json"
   },
   "project": {
     "name": "NL-Born-BSGW",
