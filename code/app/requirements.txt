@@ -1,3 +1,6 @@
+#
+# in Conda use iph38-balena-aws
+#
 boto3==1.17.97
 typing==3.7.4.3
 pandas==1.2.4

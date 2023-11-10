@@ -1,1 +1,1 @@
-iph38-ais
+iph38-balena-aws

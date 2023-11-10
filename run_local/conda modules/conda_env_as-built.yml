@@ -1,0 +1,4 @@
+name: iph38-ais
+channels:
+  - defaults
+prefix: C:\myPrograms\anaconda3\envs\iph38-ais
