@@ -3,7 +3,6 @@
 #
 boto3==1.17.97
 typing==3.7.4.3
-fiona==1.8.20 # fiona 1.10.0 generates error: AttributeError: module 'fiona' has no attribute 'path'
 pandas==1.2.4
 urllib3==1.26.5
 datetime==4.3
