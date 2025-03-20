@@ -3,7 +3,8 @@
 # Settings folders and files
 #
 ###
-/.set
+/.set/*
+!/.set/settings_TEMPLATE.json
 
 ###
 #

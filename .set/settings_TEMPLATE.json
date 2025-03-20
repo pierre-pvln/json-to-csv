@@ -1,0 +1,19 @@
+{
+	"database": {
+		"host": "ais-data-cluster.<<RDS-CLUSTERNAME>>.eu-central-1.rds.amazonaws.com",
+		"user": "<<RDS DATABASE USERNAME>>",
+		"password": "<<RDS DATABSE PASSWORD>>"
+	},
+	"sftpservers": {
+        "dashboard": {	
+			"host": "<<SFTP HOST>>",
+			"user": "<<SFTP USERNAME>>",
+			"password": "<<SFTP PASSWORD>>"
+			},
+		"blueports": {
+			"host": "<<SFTP HOST>>",
+			"user": "<<SFTP USERNAME>>",
+			"password": "<<SFTP PASSWORD>>"
+			}
+	}	
+}
