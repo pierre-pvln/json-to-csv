@@ -3,7 +3,9 @@
 # Settings folders and files
 #
 ###
+# ignore contents of /.set folder
 /.set/*
+# except a setting template file 
 !/.set/settings_TEMPLATE.json
 
 ###
