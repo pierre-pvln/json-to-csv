@@ -10,7 +10,7 @@
     "polygonset": "NL-Born-BSGW.json"
   },
   "filenames": {
-    "ref_in_fname": "2025-09-AMU"
+    "ref_in_fname": "2025-07-AMU"
   },
   "s3": {
     "inputbucket"  : "ais-datasets-json",
@@ -22,8 +22,8 @@
 	"date_type" : "leading0"
   },
   "period": {
-    "fromdate": "2025-09-01",
-    "todate"  : "2025-09-30"
+    "fromdate": "2025-07-01",
+    "todate"  : "2025-07-31"
   },
   "boundingbox": {
     "lat_min" : "51.04884071768644",
