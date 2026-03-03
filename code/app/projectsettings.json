@@ -22,7 +22,7 @@
 	"date_type" : "leading0"
   },
   "period": {
-    "fromdate": "2026-01-01",
+    "fromdate": "2026-02-01",
     "todate"  : "2026-02-28"
   },
   "boundingbox": {
