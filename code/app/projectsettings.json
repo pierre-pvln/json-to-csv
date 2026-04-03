@@ -10,7 +10,7 @@
     "polygonset": "NL-Born-BSGW.json"
   },
   "filenames": {
-    "ref_in_fname": "2026-02-AMU"
+    "ref_in_fname": "2026-03-AMU"
   },
   "s3": {
     "inputbucket"  : "ais-datasets-json",
