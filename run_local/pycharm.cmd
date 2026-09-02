@@ -53,7 +53,7 @@ IF "%USERNAME%"=="developer" (
    call C:\myPrograms\anaconda3\Scripts\activate.bat
    call conda activate %conda_environment%
    cd .\code
-   call "C:\Program Files\JetBrains\PyCharm Community Edition 2023.2.3\bin\pycharm64.exe" %IDE_START_DIR%
+   call "C:\Program Files\JetBrains\PyCharm Community Edition\bin\pycharm64.exe" %IDE_START_DIR%
    cd ..
    GOTO :DONE
 )
@@ -62,7 +62,7 @@ IF "%USERNAME%"=="pierre" (
    call C:\myPrograms\anaconda3\Scripts\activate.bat
    call conda activate %conda_environment%
    cd .\code
-   call "C:\Program Files\JetBrains\PyCharm Community Edition 2023.2.3\bin\pycharm64.exe" %IDE_START_DIR%
+   call "C:\Program Files\JetBrains\PyCharm Community Edition\bin\pycharm64.exe" %IDE_START_DIR%
    cd ..
    GOTO :DONE
 )

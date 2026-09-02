@@ -51,7 +51,8 @@ settings_dir = SETTINGS['folders']["settings_dir"]
 
 username = getpass.getuser()
 if username == 'developer':
-    path_to_files = "C:/Users/developer/OneDrive/@pvln_coding_PVE/myPolygons/"
+#    path_to_files = "C:/Users/developer/OneDrive/@pvln_coding_PVE/myPolygons/"
+    path_to_files = "C:/@my_code/myPolygons/"
 if username == 'ubuntu':
     path_to_files = "/home/ubuntu/polygons/"
 
