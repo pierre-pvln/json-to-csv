@@ -10,3 +10,4 @@ datetime==4.3
 awswrangler==2.8.0
 pysftp==0.2.9
 geopandas==0.9.0
+lxml==4.9.4
