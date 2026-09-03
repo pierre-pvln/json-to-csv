@@ -161,6 +161,7 @@ s3_response = _S3_CLIENT.upload_file(settingsfile, output_bucket, folderprefix +
 #    print(files_wanted_list)
 
 output_df = pd.DataFrame()
+output_df_list = []  # collect chunks here, concat once at the end (pandas >=2.0 removed DataFrame.append)
 
 # create a list of all the dates for which data should be processed
 dates_wanted = create_dateslist(process_from_date, process_to_date)
@@ -197,8 +198,14 @@ for a_day in dates_wanted:
                     # filtered_df['datasource'] = a_file['Key']
                     #
                     # print(filtered_df)
-                    output_df = output_df.append(filtered_df)
-                    output_df.drop_duplicates(inplace=True, ignore_index=True)
+                    output_df_list.append(filtered_df)
+
+# combine all collected chunks in one go (much faster than repeated concat/append in the loop)
+if output_df_list:
+    output_df = pd.concat(output_df_list, ignore_index=True)
+    output_df.drop_duplicates(inplace=True, ignore_index=True)
+else:
+    output_df = pd.DataFrame()
 
 # some final cleanup
 # add projectname column
