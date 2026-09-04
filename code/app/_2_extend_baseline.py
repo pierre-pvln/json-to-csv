@@ -131,11 +131,23 @@ if full_verbose:
 # remove ' GMT form time"
 ais_extended['ships_time_UTC'] = ais_extended['ships_time_UTC'].str.replace(' GMT', '', regex=False)
 
-ais_extended['ships_time_UTC'] = pd.to_datetime(ais_extended['ships_time_UTC'],
-                                                format='%Y%m%d %H:%M:%S')
-# ais_extended['ships_time_UTC'] = pd.to_datetime(ais_extended['ships_time_UTC'],
-#                                                format='%Y-%m-%d %H:%M:%S %Z'
-#                                                )
+# The upstream data source has used more than one timestamp layout over time
+# (e.g. "20260827 15:29:53" vs "2026-08-27 15:29:53"), so try the known exact
+# formats first (fast) and fall back to per-row inference if needed.
+_ships_time_raw = ais_extended['ships_time_UTC']
+_parsed_time = None
+for _fmt in ('%Y%m%d %H:%M:%S', '%Y-%m-%d %H:%M:%S'):
+    try:
+        _parsed_time = pd.to_datetime(_ships_time_raw, format=_fmt)
+        break
+    except (ValueError, TypeError):
+        continue
+if _parsed_time is None:
+    # last resort: infer the format per element (slower, but never fails on a
+    # simple format mismatch)
+    _parsed_time = pd.to_datetime(_ships_time_raw, format='mixed')
+
+ais_extended['ships_time_UTC'] = _parsed_time
 
 # Add local time column based on shipstime which is UTC
 ais_extended['local_time'] = ais_extended['ships_time_UTC'].dt.tz_localize('UTC').dt.tz_convert('Europe/Amsterdam')
