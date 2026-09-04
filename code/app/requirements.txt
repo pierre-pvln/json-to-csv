@@ -1,19 +1,6 @@
-#
-# in Conda use iph38-balena-aws
-#
-# v2 for python 3.8
-#boto3==1.17.97
-#typing==3.7.4.3
-#fiona==1.8.20 # fiona 1.10.0 generates error: AttributeError: module 'fiona' has no attribute 'path'
-#pandas==1.2.4
-#urllib3==1.26.5
-#datetime==4.3
-#awswrangler==2.8.0
-#pysftp==0.2.9
-#geopandas==0.9.0
-#lxml==4.9.4
-
-# v3 for python 3.12
+# generic packahes file for versions 
+# other than python 3.8 and python 3.12
+# =====================================
 boto3
 typing
 fiona
@@ -25,4 +12,3 @@ awswrangler
 geopandas
 lxml
 paramiko # pysfpt replacement
-
