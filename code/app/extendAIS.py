@@ -98,7 +98,7 @@ def add_shiptype(inputdf,reference_dir,reference_filename,verbose=False):
     Add AIS ships type description to dataset
     '''
     
-    df_ais_ship_types = pd.read_excel(reference_dir+reference_filename)
+    df_ais_ship_types = pd.read_excel(reference_dir+reference_filename, engine='openpyxl')
     
     extdf = pd.merge(left=inputdf, right=df_ais_ship_types, how='left', left_on='type', right_on='AIS_SHIPTYPE')
     extdf.drop(['AIS_SHIPTYPE', 'AIS_TYPE_NAME', 'AIS_DETAILED_TYPE'], axis=1, inplace=True)
@@ -254,7 +254,7 @@ def add_navstat(inputdf,reference_dir,reference_filename,verbose=False):
     Add AIS navstat to dataset
     '''
     
-    df_ais_navstat = pd.read_excel(reference_dir+reference_filename)
+    df_ais_navstat = pd.read_excel(reference_dir+reference_filename, engine='openpyxl')
     
     extdf = pd.merge(left=inputdf, right=df_ais_navstat, how='left', left_on='navstat', right_on='AIS_NAVSTAT_VALUE')
     extdf.drop(['AIS_NAVSTAT_VALUE'], axis=1, inplace=True)
@@ -303,7 +303,7 @@ def add_navstat_v2(inputdf,reference_dir="",reference_filename="",verbose=False)
 
     else:
         if verbose: print("Using default file as input.")    
-        df_ais_navstat = pd.read_excel(reference_dir+reference_filename)
+        df_ais_navstat = pd.read_excel(reference_dir+reference_filename, engine='openpyxl')
 
         extdf = pd.merge(left=inputdf, right=df_ais_navstat, how='left', left_on='navstat', right_on='AIS_NAVSTAT_VALUE')
         extdf.drop(['AIS_NAVSTAT_VALUE'], axis=1, inplace=True)

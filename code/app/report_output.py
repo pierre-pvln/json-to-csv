@@ -104,7 +104,7 @@ def missing_info(inputdf,check_column,verbose=False):
     
     if verbose: print(inputdf.columns)
     
-    missing_ships = inputdf.loc[ inputdf[check_column].isnull(), ['mmsi','name']] 
+    missing_ships = inputdf.loc[ inputdf[check_column].isnull(), ['mmsi','name']].copy()
     missing_ships.drop_duplicates(inplace=True)
     
     if verbose: print(missing_ships)

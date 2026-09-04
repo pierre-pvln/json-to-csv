@@ -90,7 +90,7 @@ def add_billing_info(inputdf, reference_dir, reference_filename, verbose=False):
 #    extdf = pd.merge(left=genericdf, right=df_billing_info,
 #                     how='left', left_on=['mmsi'], right_on=['mmsi'])
     
-    extdf = extdf.append(detaildf, ignore_index=True)
+    extdf = pd.concat([extdf, detaildf], ignore_index=True)
     print(extdf.columns)
     print(extdf)
     print("llllllllllllllllllllll")
