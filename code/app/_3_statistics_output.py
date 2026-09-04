@@ -115,7 +115,7 @@ statistics_output = pd.read_csv(input_filename+".csv")
 if full_verbose:
     print(statistics_output.columns)
 
-statistics_output['date'] = pd.to_datetime(statistics_output['local_time_str'], format='%Y-%m-%d')
+statistics_output['date'] = pd.to_datetime(statistics_output['local_time_str'], format='%Y-%m-%d %H:%M:%S')
 statistics_output['date'] = statistics_output['date'].dt.strftime('%Y-%m-%d')
 statistics_output['local_time'] = pd.to_datetime(statistics_output['local_time_str'])
 if full_verbose:

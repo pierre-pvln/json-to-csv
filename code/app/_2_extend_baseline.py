@@ -143,9 +143,10 @@ for _fmt in ('%Y%m%d %H:%M:%S', '%Y-%m-%d %H:%M:%S'):
     except (ValueError, TypeError):
         continue
 if _parsed_time is None:
-    # last resort: infer the format per element (slower, but never fails on a
-    # simple format mismatch)
-    _parsed_time = pd.to_datetime(_ships_time_raw, format='mixed')
+    # last resort: let pandas infer the format itself (slower, but works the
+    # same way on both old and new pandas versions - unlike format='mixed',
+    # which requires pandas >= 2.0)
+    _parsed_time = pd.to_datetime(_ships_time_raw)
 
 ais_extended['ships_time_UTC'] = _parsed_time
 
