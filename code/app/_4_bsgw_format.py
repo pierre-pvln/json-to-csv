@@ -290,7 +290,7 @@ columns_to_write = ['Naam', 'Voorletters', 'Voorvoegsel', 'Voornaam', 'Geslacht'
                     'Bedrag BTW', 'Omschrijving 1', 'Omschrijving 2', 'Omschrijving 3', 'LEEG', 'Verblijfsduur', 'MMSI-info']
 
 # ADD MISSING COLUMNS
-columns_to_add = set(list(columns_to_write))-set(list(current_columns))
+columns_to_add = list(set(list(columns_to_write))-set(list(current_columns)))
 BSGW_output = pd.concat([BSGW_output, pd.DataFrame(columns=columns_to_add)], sort=False)
 
 # Sort on Omschrijving1, Omschrijving2 columns
