@@ -18,9 +18,11 @@ boto3
 typing
 fiona
 pandas
+openpyxl
 urllib3
 datetime
 awswrangler
 geopandas
 lxml
 paramiko # pysfpt replacement
+
