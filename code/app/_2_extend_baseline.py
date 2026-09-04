@@ -129,7 +129,7 @@ if full_verbose:
 
 # convert timestring to datetime
 # remove ' GMT form time"
-ais_extended['ships_time_UTC'] = ais_extended['ships_time_UTC'].str.replace(' GMT', '')
+ais_extended['ships_time_UTC'] = ais_extended['ships_time_UTC'].str.replace(' GMT', '', regex=False)
 
 ais_extended['ships_time_UTC'] = pd.to_datetime(ais_extended['ships_time_UTC'],
                                                 format='%Y%m%d %H:%M:%S')
