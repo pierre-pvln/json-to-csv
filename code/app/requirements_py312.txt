@@ -1,0 +1,50 @@
+# Python 3.12 packages
+# ====================
+# pandas >=2.2 is required: this is the version where pd.to_datetime(...,
+# format=...) started strictly validating that the full string matches the
+# format (previously it silently ignored unmatched trailing text). The code
+# was fixed to work correctly with that stricter behavior - do not pin
+# pandas below 2.2 here.
+pandas>=2.2
+openpyxl
+
+boto3
+botocore
+s3transfer
+jmespath
+awswrangler
+
+numpy
+pyarrow
+pytz
+tzdata
+python-dateutil
+
+et-xmlfile
+
+fiona
+geopandas
+lxml
+shapely
+pyproj
+
+paramiko  # pysftp replacement
+cryptography
+bcrypt
+pynacl
+cffi
+pycparser
+
+urllib3
+certifi
+six
+packaging
+click
+attrs
+
+# TODO once this environment is confirmed stable in production:
+# run `pip freeze > requirements-py312.txt` and replace the loose entries
+# above with exact pins, the same way requirements-py38.txt is pinned.
+# An unpinned file means a fresh install can silently pick up a newer,
+# untested package version (this is exactly how the fiona/geopandas
+# mismatch in the 3.8 environment happened).
