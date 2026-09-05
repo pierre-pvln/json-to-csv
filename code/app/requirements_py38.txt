@@ -7,15 +7,15 @@
 fiona>=1.9,<1.10
 geopandas==0.13.2
 
+awswrangler==2.8.0
 boto3==1.17.97
-#typing==3.7.4.3
-
-#fiona==1.8.20 # fiona 1.10.0 generates error: AttributeError: module 'fiona' has no attribute 'path'
-#geopandas==0.9.0
 
 pandas==1.2.4
 urllib3==1.26.5
-#datetime==4.3
-awswrangler==2.8.0
+
 lxml==4.9.4
-paramiko # pysfpt replacement
+paramiko==3.5.1 # pysfpt replacement
+
+# original version
+#fiona==1.8.20 # fiona 1.10.0 generates error: AttributeError: module 'fiona' has no attribute 'path'
+#geopandas==0.9.0
